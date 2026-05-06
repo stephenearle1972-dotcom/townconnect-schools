@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #fdfbf7;
+  --color-forest: #2d4a3e;
+  --color-clay: #b87352;
+  --color-sand: #e8e2d6;
+  --color-text: #1a1c1a;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.font-serif {
+  font-family: 'Lora', serif;
+}
+
+.btn-primary {
+  background-color: var(--color-forest);
+  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-primary:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-forest) 50%, transparent);
+}
+
+.card-classy {
+  background: white;
+  border: 1px solid #e5e0d8;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-classy:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--color-forest) 20%, transparent);
+  border-color: var(--color-clay);
+}
+
+.hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-forest) 40%, transparent),
+    color-mix(in srgb, var(--color-forest) 85%, transparent)
+  );
+}
+
+.animate-fade {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-sand); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-clay); }
+
+.nav-link {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7280;
+  transition: color 0.2s;
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+.nav-link:hover { color: var(--color-forest); background: rgba(0, 0, 0, 0.02); }
+.nav-link.active { color: var(--color-forest); }
+
+.mobile-nav-link {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #374151;
+  padding: 14px 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  transition: all 0.2s;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+.mobile-nav-link:hover, .mobile-nav-link.active {
+  background: var(--color-forest);
+  color: white;
+}
