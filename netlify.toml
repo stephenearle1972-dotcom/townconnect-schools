@@ -1,6 +1,15 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
 
 # SPA fallback so deep links (e.g. /how-it-works) survive a hard refresh
 [[redirects]]
