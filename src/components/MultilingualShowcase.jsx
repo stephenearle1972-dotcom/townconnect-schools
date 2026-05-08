@@ -36,7 +36,7 @@ export default function MultilingualShowcase() {
         </p>
       </div>
 
-      <div className="mt-12 grid md:grid-cols-3 gap-6 sm:gap-8">
+      <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
         {home.multilingual.cards.map((c) => (
           <ConversationCard key={c.label} {...c} />
         ))}

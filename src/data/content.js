@@ -16,7 +16,7 @@ export const home = {
   solution: {
     heading: 'One WhatsApp number. Every answer. Instantly.',
     body:
-      'TownConnect Schools gives your school a dedicated WhatsApp number powered by AI. Parents send a question in plain language — English, Afrikaans, or Sepedi — and get an accurate, up-to-date answer in seconds. No app to download. No login to remember. No training required.',
+      'TownConnect Schools gives your school a dedicated WhatsApp number powered by AI. Parents send a question in plain language — English, Afrikaans, isiZulu, or Sepedi — and get an accurate, up-to-date answer in seconds. No app to download. No login to remember. No training required.',
   },
   features: [
     { title: 'Term Calendar', body: 'When is the next public holiday? When do Grade 10 exams start? Your full term calendar, always current.' },
@@ -27,7 +27,7 @@ export const home = {
     { title: 'Broadcast Notices', body: 'Send urgent notices to all parents instantly via WhatsApp. Higher open rates than email or any school app.' },
   ],
   multilingual: {
-    heading: 'One bot. Three languages.',
+    heading: 'One bot. Four languages.',
     subtext:
       'Parents ask in their language. The bot answers in the same language. No settings, no switching — it just works.',
     cards: [
@@ -44,13 +44,19 @@ export const home = {
           'Die skoolgeld vir Graad 7 is R58,500 per jaar, of R5,850 per maand oor 10 maande.',
       },
       {
+        label: 'isiZulu',
+        question: 'Izivivinyo ziqala nini?',
+        answer:
+          'Izivivinyo zephakathi nonyaka ze-Grade 8-9 ziqala ngoMeyi 12-16. Ze-Grade 10-12 ziqala ngoMeyi 19-30.',
+      },
+      {
         label: 'Sepedi',
         question: 'Diexamo di thoma neng?',
         answer:
           'Diteko tša Grade 8-9 di thoma ka 12 May go fihla ka 16 May. Diexamo tša Grade 10-12 di thoma ka 19 May go fihla ka 30 May.',
       },
     ],
-    footer: 'English. Afrikaans. Sepedi. More languages coming soon.',
+    footer: 'English. Afrikaans. isiZulu. Sepedi. More languages coming soon.',
   },
   trust: {
     heading: "Built by TownConnect — South Africa's hyperlocal platform",
@@ -82,7 +88,7 @@ export const howItWorks = {
     {
       number: '03',
       title: 'We train your bot',
-      body: "Our AI assistant learns your school's information and answers in English, Afrikaans, and Sepedi.",
+      body: "Our AI assistant learns your school's information and answers in English, Afrikaans, isiZulu, and Sepedi.",
     },
     {
       number: '04',
@@ -102,7 +108,7 @@ export const forSchools = {
   subheading: 'Email open rates at schools average 30%. WhatsApp open rates exceed 95%.',
   features: [
     { title: 'Reduce admin load', body: 'Your office staff answer the same questions hundreds of times per term. The bot handles routine queries instantly.' },
-    { title: 'Three languages, one bot', body: 'English, Afrikaans, and Sepedi built in. Parents communicate in the language they are most comfortable with.' },
+    { title: 'Four languages, one bot', body: 'English, Afrikaans, isiZulu, and Sepedi built in. Parents communicate in the language they are most comfortable with.' },
     { title: 'Reach every parent', body: 'Not every parent checks email. Not every parent downloads apps. But every parent uses WhatsApp.' },
     { title: 'Broadcast when it matters', body: 'School closed? Safety incident? Broadcast to your entire parent body via WhatsApp in under a minute.' },
     { title: 'No app fatigue', body: 'Works inside WhatsApp. Nothing to download, nothing to learn, nothing to forget.' },
