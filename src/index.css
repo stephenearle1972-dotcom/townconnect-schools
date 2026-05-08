@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #fdfbf7;
-  --color-forest: #2d4a3e;
-  --color-clay: #b87352;
-  --color-sand: #e8e2d6;
-  --color-text: #1a1c1a;
+  --color-bg: #F8F9FA;
+  --color-navy: #1B2A4A;
+  --color-gold: #D4A037;
+  --color-fog: #E5E7EB;
+  --color-tcteal: #2B7A78;
+  --color-text: #1a1a1a;
 }
 
 html, body {
@@ -31,32 +32,33 @@ img {
 }
 
 .btn-primary {
-  background-color: var(--color-forest);
+  background-color: var(--color-navy);
   color: white;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-primary:hover {
-  opacity: 0.95;
+  background-color: var(--color-gold);
+  color: var(--color-navy);
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-forest) 50%, transparent);
+  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-navy) 50%, transparent);
 }
 
 .card-classy {
   background: white;
-  border: 1px solid #e5e0d8;
+  border: 1px solid var(--color-fog);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .card-classy:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--color-forest) 20%, transparent);
-  border-color: var(--color-clay);
+  box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--color-navy) 20%, transparent);
+  border-color: var(--color-gold);
 }
 
 .hero-overlay {
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--color-forest) 40%, transparent),
-    color-mix(in srgb, var(--color-forest) 85%, transparent)
+    color-mix(in srgb, var(--color-navy) 40%, transparent),
+    color-mix(in srgb, var(--color-navy) 85%, transparent)
   );
 }
 
@@ -71,8 +73,8 @@ img {
 
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: var(--color-sand); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-clay); }
+::-webkit-scrollbar-thumb { background: var(--color-fog); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
 
 .nav-link {
   font-size: 10px;
@@ -85,8 +87,8 @@ img {
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
 }
-.nav-link:hover { color: var(--color-forest); background: rgba(0, 0, 0, 0.02); }
-.nav-link.active { color: var(--color-forest); }
+.nav-link:hover { color: var(--color-navy); background: rgba(27, 42, 74, 0.04); }
+.nav-link.active { color: var(--color-gold); }
 
 .mobile-nav-link {
   font-size: 12px;
@@ -103,6 +105,6 @@ img {
   text-align: left;
 }
 .mobile-nav-link:hover, .mobile-nav-link.active {
-  background: var(--color-forest);
+  background: var(--color-navy);
   color: white;
 }

@@ -8,10 +8,10 @@ export default function Privacy() {
   return (
     <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 animate-fade">
       <div className="text-center mb-10">
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-clay block mb-4">
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-gold block mb-4">
           Privacy
         </span>
-        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-forest italic">
+        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-navy italic">
           How we handle your data
         </h1>
       </div>
@@ -27,7 +27,7 @@ export default function Privacy() {
         </p>
         <p>
           For data enquiries:{' '}
-          <a href="mailto:hello@townconnect.co.za" className="text-forest font-bold hover:text-clay">
+          <a href="mailto:hello@townconnect.co.za" className="text-navy font-bold hover:text-gold">
             hello@townconnect.co.za
           </a>
           .

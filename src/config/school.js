@@ -13,7 +13,7 @@ export const brand = {
   name: 'TownConnect Schools',
   shortName: 'TC Schools',
   parent: 'TownConnect',
-  contactEmail: 'stephen@townconnect.co.za',
+  contactEmail: 'hello@townconnect.co.za',
   contactPhone: '+27 68 898 6081',
   pricingFrom: 'From R3,000 / month',
   pitchDeadline: 'Sunday 10 May 2026',

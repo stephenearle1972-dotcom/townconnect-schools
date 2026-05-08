@@ -16,10 +16,10 @@ export default function TryDemo() {
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 animate-fade">
       <div className="text-center max-w-3xl mx-auto">
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-clay block mb-4">
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-gold block mb-4">
           {tryDemo.eyebrow}
         </span>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-forest italic">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-navy italic">
           {tryDemo.headline}
         </h1>
         <p className="mt-6 text-base sm:text-lg text-gray-600 font-light leading-relaxed">
@@ -32,7 +32,7 @@ export default function TryDemo() {
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-bold text-forest hover:text-clay transition-colors"
+            className="font-bold text-navy hover:text-gold transition-colors"
           >
             wa.me/27791866145
           </a>

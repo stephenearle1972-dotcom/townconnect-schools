@@ -7,10 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        forest: '#2d4a3e',
-        clay: '#b87352',
-        sand: '#e8e2d6',
-        cream: '#fdfbf7',
+        navy: '#1B2A4A',
+        gold: '#D4A037',
+        fog: '#E5E7EB',
+        paper: '#F8F9FA',
+        tcteal: '#2B7A78',
       },
       fontFamily: {
         serif: ['Lora', 'serif'],

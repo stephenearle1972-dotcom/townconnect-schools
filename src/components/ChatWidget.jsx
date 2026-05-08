@@ -93,15 +93,15 @@ export default function ChatWidget() {
 
   return (
     <div className="card-classy rounded-2xl overflow-hidden flex flex-col" style={{ height: '600px', maxHeight: '80vh' }}>
-      <div className="px-5 py-4 border-b border-[#e5e0d8] bg-white flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-[#E5E7EB] bg-white flex items-center justify-between">
         <div>
-          <p className="text-[9px] font-black uppercase tracking-[0.4em] text-clay">Live demo</p>
-          <p className="text-sm font-serif italic text-forest">Highveld Academy assistant</p>
+          <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gold">Live demo</p>
+          <p className="text-sm font-serif italic text-navy">Highveld Academy assistant</p>
         </div>
         <span className="text-[10px] text-gray-500">Powered by TownConnect Schools</span>
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-6 space-y-4 bg-[#fdfbf7]">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-6 space-y-4 bg-[#F8F9FA]">
         {messages.length === 0 && (
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Try asking</p>
@@ -111,9 +111,9 @@ export default function ChatWidget() {
                   key={q}
                   type="button"
                   onClick={() => sendMessage(q)}
-                  className="card-classy rounded-xl px-4 py-3 text-left text-sm text-gray-700 hover:text-forest transition-colors"
+                  className="card-classy rounded-xl px-4 py-3 text-left text-sm text-gray-700 hover:text-navy transition-colors"
                 >
-                  <span className="text-clay mr-2">›</span>
+                  <span className="text-gold mr-2">›</span>
                   {q}
                 </button>
               ))}
@@ -126,10 +126,10 @@ export default function ChatWidget() {
             <div
               className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                 m.role === 'user'
-                  ? 'bg-forest text-white rounded-br-sm'
-                  : 'bg-white border border-[#e5e0d8] text-gray-800 rounded-bl-sm'
+                  ? 'bg-navy text-white rounded-br-sm'
+                  : 'bg-white border border-[#E5E7EB] text-gray-800 rounded-bl-sm'
               }`}
-              style={m.role === 'user' ? { backgroundColor: 'var(--color-forest)' } : undefined}
+              style={m.role === 'user' ? { backgroundColor: 'var(--color-navy)' } : undefined}
             >
               {m.text}
             </div>
@@ -138,23 +138,23 @@ export default function ChatWidget() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-white border border-[#e5e0d8] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-clay animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-2 h-2 rounded-full bg-clay animate-bounce" style={{ animationDelay: '150ms' }} />
-              <span className="w-2 h-2 rounded-full bg-clay animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="bg-white border border-[#E5E7EB] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
           </div>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="border-t border-[#e5e0d8] bg-white px-4 py-3 flex items-center gap-2">
+      <form onSubmit={handleSubmit} className="border-t border-[#E5E7EB] bg-white px-4 py-3 flex items-center gap-2">
         {speechSupported && (
           <button
             type="button"
             onClick={toggleMic}
             aria-label={listening ? 'Stop listening' : 'Start voice input'}
             className={`p-2 rounded-full transition-colors ${
-              listening ? 'bg-clay text-white' : 'bg-[#f5f1ea] text-gray-600 hover:bg-[#ebe5da]'
+              listening ? 'bg-gold text-white' : 'bg-[#F1F3F5] text-gray-600 hover:bg-[#E5E7EB]'
             }`}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -169,20 +169,20 @@ export default function ChatWidget() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask anything about Highveld Academy…"
-          className="flex-1 bg-[#f5f1ea] rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-clay"
+          className="flex-1 bg-[#F1F3F5] rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
           disabled={loading}
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
           className="btn-primary px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ backgroundColor: 'var(--color-forest)' }}
+          style={{ backgroundColor: 'var(--color-navy)' }}
         >
           Send
         </button>
       </form>
 
-      <p className="px-5 py-3 text-[10px] text-gray-500 italic text-center bg-white border-t border-[#e5e0d8]">
+      <p className="px-5 py-3 text-[10px] text-gray-500 italic text-center bg-white border-t border-[#E5E7EB]">
         This assistant is trained on Highveld Academy school data. Powered by TownConnect Schools.
       </p>
     </div>

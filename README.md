@@ -51,7 +51,7 @@ See `.env.example`. Never commit `.env`.
 
 - **Fully isolated from the existing TownConnect bot fleet.** New repo, new Netlify site, new Google Cloud project for Gemini, new WhatsApp number.
 - Site uses the `schools.townconnect.co.za` subdomain only — no new domain.
-- Visual language matches the TownConnect family (forest / clay / sand on cream, Inter + Lora).
+- Visual language is the Schools palette (navy #1B2A4A / gold #D4A037 / fog #E5E7EB on paper #F8F9FA, with teal #2B7A78 footer for TownConnect family connection, Inter + Lora).
 
 ## Status
 

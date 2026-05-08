@@ -6,7 +6,7 @@ export default function SampleQuestions({ items }) {
           key={q}
           className="card-classy rounded-2xl px-5 py-4 flex items-center gap-3"
         >
-          <span className="text-clay text-lg">›</span>
+          <span className="text-gold text-lg">›</span>
           <span className="text-sm text-gray-700">{q}</span>
         </li>
       ))}

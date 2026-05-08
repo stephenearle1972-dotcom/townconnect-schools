@@ -2,8 +2,8 @@ import { howItWorks } from '../data/content.js';
 
 export default function HowItWorksVisual() {
   return (
-    <div className="card-classy rounded-3xl p-6 sm:p-10 bg-gradient-to-br from-white to-sand/30 max-w-md mx-auto">
-      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-clay mb-6">
+    <div className="card-classy rounded-3xl p-6 sm:p-10 bg-gradient-to-br from-white to-fog/30 max-w-md mx-auto">
+      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gold mb-6">
         Sample conversation
       </p>
       <div className="space-y-3">
@@ -15,8 +15,8 @@ export default function HowItWorksVisual() {
             <div
               className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                 msg.from === 'parent'
-                  ? 'bg-forest text-white rounded-br-sm'
-                  : 'bg-sand/60 text-forest rounded-bl-sm'
+                  ? 'bg-navy text-white rounded-br-sm'
+                  : 'bg-fog/60 text-navy rounded-bl-sm'
               }`}
             >
               {msg.text}

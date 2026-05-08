@@ -10,10 +10,10 @@ export default function ForSchools() {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 animate-fade">
       <div className="text-center max-w-3xl mx-auto">
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-clay block mb-4">
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-gold block mb-4">
           {forSchools.eyebrow}
         </span>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-forest italic">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-navy italic">
           {forSchools.headline}
         </h1>
       </div>
@@ -23,11 +23,11 @@ export default function ForSchools() {
         <Panel title={forSchools.get.title} items={forSchools.get.items} />
       </div>
 
-      <div className="mt-20 card-classy rounded-3xl p-10 sm:p-16 text-center bg-gradient-to-br from-white to-sand/40">
-        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-clay mb-4">
+      <div className="mt-20 card-classy rounded-3xl p-10 sm:p-16 text-center bg-gradient-to-br from-white to-fog/40">
+        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gold mb-4">
           {forSchools.pricing.label}
         </p>
-        <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-forest italic">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-navy italic">
           {forSchools.pricing.headline}
         </h2>
         <p className="mt-6 max-w-xl mx-auto text-gray-600 font-light leading-relaxed">
@@ -48,16 +48,16 @@ function Panel({ title, items, accent = false }) {
   return (
     <div
       className={`card-classy rounded-3xl p-8 sm:p-10 ${
-        accent ? 'bg-gradient-to-br from-white to-sand/40' : ''
+        accent ? 'bg-gradient-to-br from-white to-fog/40' : ''
       }`}
     >
-      <h3 className="text-2xl sm:text-3xl font-serif font-bold text-forest italic">
+      <h3 className="text-2xl sm:text-3xl font-serif font-bold text-navy italic">
         {title}
       </h3>
       <ul className="mt-6 space-y-4">
         {items.map((item) => (
           <li key={item} className="flex gap-3 text-sm text-gray-700 leading-relaxed">
-            <span className="text-clay flex-shrink-0">›</span>
+            <span className="text-gold flex-shrink-0">›</span>
             <span>{item}</span>
           </li>
         ))}

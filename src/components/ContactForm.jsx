@@ -31,9 +31,9 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="card-classy rounded-3xl p-10 text-center bg-gradient-to-br from-white to-sand/40">
+      <div className="card-classy rounded-3xl p-10 text-center bg-gradient-to-br from-white to-fog/40">
         <span className="text-4xl">✓</span>
-        <p className="mt-4 text-forest font-serif italic text-xl">
+        <p className="mt-4 text-navy font-serif italic text-xl">
           {contact.successMessage}
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function ContactForm() {
       <TextField label="What would you like to know?" name="message" required />
 
       {error && (
-        <p className="text-sm text-clay">{error}</p>
+        <p className="text-sm text-gold">{error}</p>
       )}
 
       <button
@@ -87,7 +87,7 @@ function Field({ label, name, type, required }) {
         type={type}
         name={name}
         required={required}
-        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#e5e0d8] bg-white focus:outline-none focus:border-forest focus:ring-1 focus:ring-forest text-sm"
+        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy text-sm"
       />
     </label>
   );
@@ -103,7 +103,7 @@ function TextField({ label, name, required }) {
         name={name}
         required={required}
         rows={5}
-        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#e5e0d8] bg-white focus:outline-none focus:border-forest focus:ring-1 focus:ring-forest text-sm resize-y"
+        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy text-sm resize-y"
       />
     </label>
   );

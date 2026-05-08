@@ -9,11 +9,11 @@ export default function DemoCTA({
 }) {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-      <div className="card-classy rounded-3xl p-10 sm:p-16 text-center bg-gradient-to-br from-white to-sand/40">
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-clay mb-4 block">
+      <div className="card-classy rounded-3xl p-10 sm:p-16 text-center bg-gradient-to-br from-white to-fog/40">
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-gold mb-4 block">
           {eyebrow}
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-forest italic">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-navy italic">
           {headline}
         </h2>
         <p className="mt-6 max-w-xl mx-auto text-gray-600 font-light">{body}</p>
