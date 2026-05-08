@@ -1,114 +1,191 @@
-// All marketing copy in one file. Stephen will replace the Lorem-Ipsum body copy
-// Thursday morning. Headings and structure are real.
+// Marketing copy for every page. One file = one source of truth.
 
 export const home = {
-  eyebrow: 'TownConnect Schools',
-  headlineLead: 'Your school,',
-  headlineAccent: 'on WhatsApp.',
-  subhead:
-    'Parents, teachers and learners get correct, instant answers to every routine school question — without an app, without a login, without a password reset.',
-  ctaPrimary: 'Try the demo',
-  ctaSecondary: 'How it works',
-  pillars: [
-    {
-      kicker: 'Zero friction',
-      title: 'No app. No login.',
-      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Parents already have WhatsApp open. That is the whole product.',
-    },
-    {
-      kicker: 'Instant answers',
-      title: 'Term dates, fixtures, teachers, notices.',
-      body: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bot reads from the school’s spreadsheet and answers in plain English.',
-    },
-    {
-      kicker: 'One source of truth',
-      title: 'School updates the sheet, the bot updates everyone.',
-      body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    },
+  hero: {
+    headline: "Your school's WhatsApp assistant. Always on. Always accurate.",
+    subhead:
+      'Parents ask questions. Your admin team answers the same ones every day. TownConnect Schools gives every parent instant access to term dates, sport fixtures, teacher contacts, fees, and notices — through the app they already use.',
+    ctaPrimary: 'See how it works',
+    ctaSecondary: 'Try the live demo',
+  },
+  problem: {
+    heading: 'The school admin problem nobody talks about',
+    body:
+      'Every school office knows the drill. The phone rings. When do exams start? Who teaches my child maths? What time is the rugby on Saturday? Good questions. But when your admin team answers the same 50 questions 200 times a term, that is time that should go to running the school. Parents are not the problem. The channel is. Email gets buried. Apps get ignored. PDFs get lost. But WhatsApp? Every parent in South Africa opens WhatsApp every single day.',
+  },
+  solution: {
+    heading: 'One WhatsApp number. Every answer. Instantly.',
+    body:
+      'TownConnect Schools gives your school a dedicated WhatsApp number powered by AI. Parents send a question in plain language — English, Afrikaans, or Sepedi — and get an accurate, up-to-date answer in seconds. No app to download. No login to remember. No training required.',
+  },
+  features: [
+    { title: 'Term Calendar', body: 'When is the next public holiday? When do Grade 10 exams start? Your full term calendar, always current.' },
+    { title: 'Sport Fixtures', body: 'Is there hockey this Saturday? When does 1st XV play? Fixtures, times, opponents, venues — all searchable.' },
+    { title: 'Teacher Directory', body: 'Who teaches Grade 8 science? Staff names, subjects, email addresses, and extensions.' },
+    { title: 'School Notices', body: 'Any new notices this week? Every notice available instantly, no digging through emails.' },
+    { title: 'Fees & General Info', body: 'What are Grade 4 fees? Fees, bus routes, uniform rules, office hours — all in one place.' },
+    { title: 'Broadcast Notices', body: 'Send urgent notices to all parents instantly via WhatsApp. Higher open rates than email or any school app.' },
   ],
+  multilingual: {
+    heading: 'One bot. Three languages.',
+    subtext:
+      'Parents ask in their language. The bot answers in the same language. No settings, no switching — it just works.',
+    cards: [
+      {
+        label: 'English',
+        question: 'When do exams start?',
+        answer:
+          'Grade 8-9 mid-term tests run 12-16 May. Grade 10-12 mid-year exams run 19-30 May.',
+      },
+      {
+        label: 'Afrikaans',
+        question: 'Wat is die skoolgeld vir Graad 7?',
+        answer:
+          'Die skoolgeld vir Graad 7 is R58,500 per jaar, of R5,850 per maand oor 10 maande.',
+      },
+      {
+        label: 'Sepedi',
+        question: 'Diexamo di thoma neng?',
+        answer:
+          'Diteko tša Grade 8-9 di thoma ka 12 May go fihla ka 16 May. Diexamo tša Grade 10-12 di thoma ka 19 May go fihla ka 30 May.',
+      },
+    ],
+    footer: 'English. Afrikaans. Sepedi. More languages coming soon.',
+  },
+  trust: {
+    heading: "Built by TownConnect — South Africa's hyperlocal platform",
+    body:
+      'TownConnect Schools is built by the same team behind TownConnect, the hyperlocal business directory powering 21 town websites and 13 WhatsApp bots across South Africa.',
+  },
+  cta: {
+    heading: 'See it in action',
+    body:
+      "We built a working demo for Highveld Academy. Try the bot yourself — ask about exams, sport fixtures, fees, or teachers. Then imagine it answering your parents' questions.",
+    button: 'Try the demo now',
+  },
 };
 
 export const howItWorks = {
-  eyebrow: 'How it works',
-  headline: 'Three steps. That is the whole thing.',
+  heading: 'How TownConnect Schools works',
+  subheading: 'From signup to live bot in under two weeks.',
   steps: [
     {
       number: '01',
-      title: 'School sends us their data',
-      body: 'Term calendar, sports fixtures, teacher contacts, notices, general info. One Google Sheet. Lorem ipsum dolor sit amet.',
+      title: "We set up your school's WhatsApp number",
+      body: 'Your school gets a dedicated WhatsApp Business number with your school name and logo.',
     },
     {
       number: '02',
-      title: 'We give the school a WhatsApp number',
-      body: 'Print it on every newsletter, slip and noticeboard. Parents save it once. Lorem ipsum dolor sit amet.',
+      title: 'You share your school data',
+      body: 'Term dates, sport fixtures, teacher list, notices, fees, uniform policy. Update any time through a simple web form or shared spreadsheet.',
     },
     {
       number: '03',
-      title: 'Parents ask. The bot answers.',
-      body: '"When does term 2 end?" "Who teaches Grade 7 maths?" Instant, correct, in plain English. Lorem ipsum dolor sit amet.',
+      title: 'We train your bot',
+      body: "Our AI assistant learns your school's information and answers in English, Afrikaans, and Sepedi.",
+    },
+    {
+      number: '04',
+      title: 'Parents start asking questions',
+      body: 'Share the WhatsApp number. From that moment, any parent can get instant answers, 24/7.',
+    },
+    {
+      number: '05',
+      title: 'You send broadcast notices',
+      body: 'School closure, safety alert, event reminder — broadcast to your entire parent body via WhatsApp in under a minute.',
     },
   ],
-  conversation: [
-    { from: 'parent', text: 'When is the U13A rugby match this Saturday?' },
-    { from: 'bot', text: 'Saturday 9 May, 09:30 vs St Andrews at home.' },
-    { from: 'parent', text: 'How do I reach Mrs Botha?' },
-    { from: 'bot', text: 'Mrs Botha teaches Grade 7 Mathematics — botha@highveld.demo, ext. 102.' },
-  ],
-};
-
-export const tryDemo = {
-  eyebrow: 'Live demo',
-  headline: 'Message the Highveld Academy bot.',
-  subhead:
-    'Highveld Academy is a fictional school we built so you can try the product without us needing a real school first. Tap the button and ask anything below.',
-  sampleQuestions: [
-    'When does term 2 end?',
-    'Is there school on Friday?',
-    'When is the next U13A rugby match?',
-    'Who teaches Grade 7 maths?',
-    'How do I reach Mrs Botha?',
-    'Any notices today?',
-    'What time does school start?',
-    'When are the next exams?',
-  ],
-  notice:
-    'The live WhatsApp number activates Thursday evening. Until then, the demo button takes you to a placeholder.',
 };
 
 export const forSchools = {
-  eyebrow: 'For schools',
-  headline: 'What you give us. What you get back.',
-  give: {
-    title: 'You give us',
-    items: [
-      'A Google Sheet (we provide the template)',
-      'Term dates, sports fixtures, teacher contacts, notices, general info',
-      'A name and a logo',
-      'About 90 minutes of admin time per week to keep the sheet current',
-    ],
-  },
-  get: {
-    title: 'You get',
-    items: [
-      'A dedicated WhatsApp number for your school',
-      'A bot that answers parent and learner questions instantly, 24/7',
-      'A simple admin form to broadcast urgent notices to opted-in parents',
-      'A weekly digest of unanswered questions so you know what parents actually want to know',
-    ],
-  },
+  heading: 'Give your parents the communication channel they actually use',
+  subheading: 'Email open rates at schools average 30%. WhatsApp open rates exceed 95%.',
+  features: [
+    { title: 'Reduce admin load', body: 'Your office staff answer the same questions hundreds of times per term. The bot handles routine queries instantly.' },
+    { title: 'Three languages, one bot', body: 'English, Afrikaans, and Sepedi built in. Parents communicate in the language they are most comfortable with.' },
+    { title: 'Reach every parent', body: 'Not every parent checks email. Not every parent downloads apps. But every parent uses WhatsApp.' },
+    { title: 'Broadcast when it matters', body: 'School closed? Safety incident? Broadcast to your entire parent body via WhatsApp in under a minute.' },
+    { title: 'No app fatigue', body: 'Works inside WhatsApp. Nothing to download, nothing to learn, nothing to forget.' },
+    { title: 'Stay current automatically', body: 'Update a fixture or notice and it is live immediately. No waiting for the next newsletter.' },
+  ],
   pricing: {
-    label: 'Pricing',
-    headline: 'From R3,000 / month',
-    body:
-      'One simple price, includes the WhatsApp number, the bot, the broadcast feature, and ongoing support. No setup fee for the first ten schools.',
+    tiers: [
+      {
+        name: 'Essentials',
+        price: 'R1,950',
+        period: '/month',
+        features: [
+          'WhatsApp number',
+          'Calendar, fixtures, teachers, notices',
+          'English + Afrikaans',
+          'Web dashboard',
+          'Email support',
+        ],
+      },
+      {
+        name: 'Professional',
+        price: 'R2,950',
+        period: '/month',
+        highlight: true,
+        features: [
+          'Everything in Essentials',
+          'Broadcast (500 parents)',
+          'Sepedi added',
+          'Priority WhatsApp support',
+          'Monthly report',
+        ],
+      },
+      {
+        name: 'Premium',
+        price: 'R4,950',
+        period: '/month',
+        features: [
+          'Everything in Professional',
+          'Broadcast (2,000 parents)',
+          'Custom branding',
+          'Dedicated onboarding',
+          'Quarterly review',
+        ],
+      },
+      {
+        name: 'Enterprise',
+        price: 'From R9,500',
+        period: '/month',
+        features: [
+          'Multi-campus',
+          'Unlimited broadcasts',
+          'Custom integrations',
+          'SLA',
+          'On-site training',
+        ],
+      },
+    ],
+    note: 'No setup fee during launch. Month-to-month. Annual billing at 10% discount.',
   },
 };
 
+export const tryDemo = {
+  heading: 'Try it yourself — meet Highveld Academy',
+  subheading:
+    'Highveld Academy is a fictional sports school in Centurion. Its WhatsApp bot is live right now. Ask it anything.',
+  sampleQuestions: [
+    'When do exams start?',
+    'Is there rugby this Saturday?',
+    'Who teaches Grade 11 maths?',
+    'What are the school fees?',
+    'Wanneer begin die eksamen?',
+    'Skoolgeld ke bokae?',
+  ],
+};
+
 export const contact = {
-  eyebrow: 'Contact',
-  headline: 'Get a demo for your school.',
-  subhead:
+  heading: "Let's talk about your school",
+  subheading:
     'Tell us about your school and we will send you a 10-minute walkthrough video and a link to try the live bot. We respond within one working day.',
+  cards: {
+    family:
+      'TownConnect Schools is a product of TownConnect (Pty) Ltd — the hyperlocal platform powering 21 South African town sites. Reg: 2026/106250/07.',
+  },
   successMessage:
     'Thank you. We will be in touch within one working day with a walkthrough video and a link to the live demo.',
 };

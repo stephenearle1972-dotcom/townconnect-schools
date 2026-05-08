@@ -11,14 +11,11 @@ export default function Contact() {
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 animate-fade">
       <div className="text-center max-w-3xl mx-auto">
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-gold block mb-4">
-          {contact.eyebrow}
-        </span>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-navy italic">
-          {contact.headline}
+          {contact.heading}
         </h1>
         <p className="mt-6 text-base sm:text-lg text-gray-600 font-light leading-relaxed">
-          {contact.subhead}
+          {contact.subheading}
         </p>
       </div>
 
@@ -56,7 +53,7 @@ export default function Contact() {
               {brand.parent} family
             </p>
             <p className="mt-3 text-sm text-gray-600 font-light leading-relaxed">
-              TownConnect Schools is a sister product to TownConnect — the hyperlocal directory platform powering 16 South African town sites.
+              {contact.cards.family}
             </p>
           </div>
         </aside>

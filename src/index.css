@@ -6,7 +6,7 @@
   --color-bg: #F8F9FA;
   --color-navy: #1B2A4A;
   --color-gold: #D4A037;
-  --color-fog: #E5E7EB;
+  --color-fog: #E2E8F0;
   --color-tcteal: #2B7A78;
   --color-text: #1a1a1a;
 }
@@ -32,15 +32,14 @@ img {
 }
 
 .btn-primary {
-  background-color: var(--color-navy);
+  background-color: var(--color-gold);
   color: white;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-primary:hover {
-  background-color: var(--color-gold);
-  color: var(--color-navy);
+  background-color: #B88820;
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-navy) 50%, transparent);
+  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-navy) 40%, transparent);
 }
 
 .card-classy {
@@ -76,35 +75,35 @@ img {
 ::-webkit-scrollbar-thumb { background: var(--color-fog); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
 
-.nav-link {
+.nav-link-dark {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #6b7280;
-  transition: color 0.2s;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 0.2s, background 0.2s;
   white-space: nowrap;
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
 }
-.nav-link:hover { color: var(--color-navy); background: rgba(27, 42, 74, 0.04); }
-.nav-link.active { color: var(--color-gold); }
+.nav-link-dark:hover { color: var(--color-gold); background: rgba(255, 255, 255, 0.06); }
+.nav-link-dark.active { color: var(--color-gold); }
 
-.mobile-nav-link {
+.mobile-nav-link-dark {
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #374151;
+  color: rgba(255, 255, 255, 0.85);
   padding: 14px 16px;
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   transition: all 0.2s;
   display: block;
   width: 100%;
   text-align: left;
 }
-.mobile-nav-link:hover, .mobile-nav-link.active {
-  background: var(--color-navy);
-  color: white;
+.mobile-nav-link-dark:hover, .mobile-nav-link-dark.active {
+  background: var(--color-gold);
+  color: var(--color-navy);
 }

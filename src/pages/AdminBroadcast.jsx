@@ -118,7 +118,7 @@ export default function AdminBroadcast() {
           <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>
         )}
         {result && (
-          <p className="text-sm text-navy bg-[#F1F3F5] border border-[#E5E7EB] rounded-xl px-4 py-3">
+          <p className="text-sm text-navy bg-[#F1F3F5] border border-[#E2E8F0] rounded-xl px-4 py-3">
             Sent: <strong>{result.sent}</strong> &nbsp;·&nbsp; Failed: <strong>{result.failed}</strong>
           </p>
         )}

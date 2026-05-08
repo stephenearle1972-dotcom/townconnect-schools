@@ -14,7 +14,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="bg-white/90 backdrop-blur-md border-b border-[#E5E7EB] sticky top-0 z-50">
+    <nav className="bg-navy text-white sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 sm:h-20 items-center">
           <Link
@@ -22,10 +22,10 @@ export default function Header() {
             className="flex-shrink-0 flex items-center cursor-pointer group"
             onClick={() => setMobileOpen(false)}
           >
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-navy rounded-lg flex items-center justify-center mr-2 sm:mr-3 transition-all group-hover:bg-gold shadow-sm group-hover:rotate-12">
-              <span className="text-white font-serif font-bold text-lg sm:text-xl italic">S</span>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gold rounded-lg flex items-center justify-center mr-2 sm:mr-3 transition-transform shadow-sm group-hover:rotate-12">
+              <span className="text-navy font-serif font-bold text-lg sm:text-xl italic">S</span>
             </div>
-            <span className="text-lg sm:text-xl font-serif font-bold tracking-tight text-navy">
+            <span className="text-lg sm:text-xl font-serif font-bold tracking-tight text-white">
               TownConnect<span className="text-gold"> Schools</span>
             </span>
           </Link>
@@ -36,7 +36,7 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 end={item.end}
-                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                className={({ isActive }) => `nav-link-dark ${isActive ? 'active' : ''}`}
               >
                 {item.label}
               </NavLink>
@@ -50,11 +50,11 @@ export default function Header() {
           </div>
 
           <button
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
-            <svg className="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -65,7 +65,7 @@ export default function Header() {
         </div>
 
         {mobileOpen && (
-          <div className="lg:hidden border-t border-[#E5E7EB] py-4 animate-fade max-h-[80vh] overflow-y-auto">
+          <div className="lg:hidden border-t border-white/10 py-4 animate-fade max-h-[80vh] overflow-y-auto">
             <div className="space-y-2">
               {navItems.map((item) => (
                 <NavLink
@@ -73,7 +73,7 @@ export default function Header() {
                   to={item.to}
                   end={item.end}
                   onClick={() => setMobileOpen(false)}
-                  className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`}
+                  className={({ isActive }) => `mobile-nav-link-dark ${isActive ? 'active' : ''}`}
                 >
                   {item.label}
                 </NavLink>

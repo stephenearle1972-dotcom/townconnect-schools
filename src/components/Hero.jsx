@@ -3,37 +3,44 @@ import { home } from '../data/content.js';
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-paper via-white to-fog/30" />
-        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gold/10 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-navy/10 blur-3xl" />
-      </div>
+    <section className="relative w-full overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/hero-schools.png')" }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0"
+        style={{ backgroundColor: 'rgba(27, 42, 74, 0.55)' }}
+        aria-hidden="true"
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 md:py-36 animate-fade">
-        <div className="text-center">
-          <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.6em] text-gold mb-4 sm:mb-6 block">
-            {home.eyebrow}
+      <div
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center text-center animate-fade"
+        style={{ minHeight: 'clamp(420px, 60vh, 600px)' }}
+      >
+        <div className="py-16 sm:py-20">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] text-gold mb-4 sm:mb-6 block">
+            TownConnect Schools
           </span>
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-bold text-navy leading-tight">
-            <span className="block">{home.headlineLead}</span>
-            <span className="block italic text-gold">{home.headlineAccent}</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-bold text-white leading-tight max-w-4xl mx-auto">
+            {home.hero.headline}
           </h1>
-          <p className="mt-6 sm:mt-10 max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-gray-600 font-light leading-relaxed">
-            {home.subhead}
+          <p className="mt-6 sm:mt-8 max-w-2xl mx-auto text-base sm:text-lg text-white/90 font-light leading-relaxed">
+            {home.hero.subhead}
           </p>
-          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <Link
-              to="/try-demo"
-              className="btn-primary px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest"
-            >
-              {home.ctaPrimary}
-            </Link>
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <Link
               to="/how-it-works"
-              className="px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 border-navy/30 text-navy hover:bg-navy hover:text-white transition-colors"
+              className="btn-primary px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest"
             >
-              {home.ctaSecondary}
+              {home.hero.ctaPrimary}
+            </Link>
+            <Link
+              to="/try-demo"
+              className="px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 border-white/70 text-white hover:bg-white hover:text-navy transition-colors"
+            >
+              {home.hero.ctaSecondary}
             </Link>
           </div>
         </div>

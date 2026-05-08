@@ -87,7 +87,7 @@ function Field({ label, name, type, required }) {
         type={type}
         name={name}
         required={required}
-        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy text-sm"
+        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#E2E8F0] bg-white focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy text-sm"
       />
     </label>
   );
@@ -103,7 +103,7 @@ function TextField({ label, name, required }) {
         name={name}
         required={required}
         rows={5}
-        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy text-sm resize-y"
+        className="mt-2 w-full px-4 py-3 rounded-xl border border-[#E2E8F0] bg-white focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy text-sm resize-y"
       />
     </label>
   );

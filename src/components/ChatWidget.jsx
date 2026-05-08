@@ -1,12 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { tryDemo } from '../data/content.js';
 
-const SAMPLE_QUESTIONS = [
-  'When do exams start?',
-  'Is there rugby this Saturday?',
-  'Who teaches Grade 11 maths?',
-  'What are the school fees?',
-  'Wanneer begin die eksamen?',
-];
+const SAMPLE_QUESTIONS = tryDemo.sampleQuestions;
 
 const speechSupported =
   typeof window !== 'undefined' &&
@@ -93,7 +88,7 @@ export default function ChatWidget() {
 
   return (
     <div className="card-classy rounded-2xl overflow-hidden flex flex-col" style={{ height: '600px', maxHeight: '80vh' }}>
-      <div className="px-5 py-4 border-b border-[#E5E7EB] bg-white flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-[#E2E8F0] bg-white flex items-center justify-between">
         <div>
           <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gold">Live demo</p>
           <p className="text-sm font-serif italic text-navy">Highveld Academy assistant</p>
@@ -127,7 +122,7 @@ export default function ChatWidget() {
               className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                 m.role === 'user'
                   ? 'bg-navy text-white rounded-br-sm'
-                  : 'bg-white border border-[#E5E7EB] text-gray-800 rounded-bl-sm'
+                  : 'bg-white border border-[#E2E8F0] text-gray-800 rounded-bl-sm'
               }`}
               style={m.role === 'user' ? { backgroundColor: 'var(--color-navy)' } : undefined}
             >
@@ -138,7 +133,7 @@ export default function ChatWidget() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-1">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '0ms' }} />
               <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '150ms' }} />
               <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -147,14 +142,14 @@ export default function ChatWidget() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="border-t border-[#E5E7EB] bg-white px-4 py-3 flex items-center gap-2">
+      <form onSubmit={handleSubmit} className="border-t border-[#E2E8F0] bg-white px-4 py-3 flex items-center gap-2">
         {speechSupported && (
           <button
             type="button"
             onClick={toggleMic}
             aria-label={listening ? 'Stop listening' : 'Start voice input'}
             className={`p-2 rounded-full transition-colors ${
-              listening ? 'bg-gold text-white' : 'bg-[#F1F3F5] text-gray-600 hover:bg-[#E5E7EB]'
+              listening ? 'bg-gold text-white' : 'bg-[#F1F3F5] text-gray-600 hover:bg-[#E2E8F0]'
             }`}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -182,7 +177,7 @@ export default function ChatWidget() {
         </button>
       </form>
 
-      <p className="px-5 py-3 text-[10px] text-gray-500 italic text-center bg-white border-t border-[#E5E7EB]">
+      <p className="px-5 py-3 text-[10px] text-gray-500 italic text-center bg-white border-t border-[#E2E8F0]">
         This assistant is trained on Highveld Academy school data. Powered by TownConnect Schools.
       </p>
     </div>
