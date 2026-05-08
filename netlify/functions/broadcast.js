@@ -32,7 +32,7 @@ async function sendWhatsAppText(to, text) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: CORS_HEADERS, body: '' };
   }

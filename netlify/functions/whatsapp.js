@@ -1,4 +1,4 @@
-const { buildSystemPrompt } = require('./school-data.js');
+import { buildSystemPrompt } from './lib/school-data.js';
 
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
@@ -49,7 +49,7 @@ async function sendWhatsAppReply(to, text) {
   return response.ok;
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod === 'GET') {
     const params = event.queryStringParameters || {};
     if (params['hub.mode'] === 'subscribe' && params['hub.verify_token'] === VERIFY_TOKEN) {

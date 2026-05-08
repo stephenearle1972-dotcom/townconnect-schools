@@ -169,4 +169,4 @@ SCHOOL DATA:
 ${SCHOOL_DATA}`;
 }
 
-module.exports = { SCHOOL_DATA, buildSystemPrompt };
+export { SCHOOL_DATA, buildSystemPrompt };
