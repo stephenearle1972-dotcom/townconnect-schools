@@ -48,6 +48,78 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Comparison */}
+      <section className="bg-paper">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-navy italic text-center">
+            Why schools are switching to WhatsApp.
+          </h2>
+
+          <div className="mt-12 sm:mt-16 grid md:grid-cols-2 gap-6 sm:gap-8">
+            {/* Old way column */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-6">
+                The old way
+              </p>
+              <ul className="space-y-4">
+                {[
+                  'Parents download another app',
+                  'Parents scroll through a feed hoping to find answers',
+                  'Communication in English and Afrikaans only',
+                  'Adverts between school messages',
+                  'Works when the school remembers to post',
+                  'Complex admin portal requiring training',
+                  'Weeks to set up',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-gray-500 font-light leading-relaxed line-through decoration-gray-300">
+                    <span aria-hidden="true" className="mt-2 inline-block w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* TownConnect way column */}
+            <div className="rounded-2xl bg-navy text-white p-6 sm:p-8 shadow-3xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gold mb-6">
+                The TownConnect way
+              </p>
+              <ul className="space-y-4">
+                {[
+                  'Parents use WhatsApp — already on every phone',
+                  'Parents ask a question and get an instant answer',
+                  'Four languages: English, Afrikaans, isiZulu, and Sepedi',
+                  'Zero advertising. Ever.',
+                  'Works 24/7 — parents get answers at 9pm on a Thursday',
+                  'Update a spreadsheet. Done.',
+                  'Live in days',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 font-semibold leading-relaxed">
+                    <svg
+                      aria-hidden="true"
+                      className="mt-1 w-5 h-5 text-gold flex-shrink-0"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.704 5.29a1 1 0 010 1.42l-7.5 7.5a1 1 0 01-1.42 0l-3.5-3.5a1 1 0 011.42-1.42l2.79 2.79 6.79-6.79a1 1 0 011.42 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <p className="mt-12 sm:mt-16 text-center text-base sm:text-lg text-gray-700 font-light leading-relaxed max-w-3xl mx-auto">
+            Already using a school communication app? TownConnect Schools works alongside it — adding the WhatsApp layer your parents actually want.
+          </p>
+        </div>
+      </section>
+
       {/* Multilingual showcase */}
       <MultilingualShowcase />
 
