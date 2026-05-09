@@ -1,4 +1,5 @@
-import { buildSystemPrompt } from './lib/school-data.js';
+import { resolveSchool, getFullData, logQuery } from './lib/school-resolver.js';
+import { buildSystemPrompt } from './lib/system-prompt.js';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
@@ -9,6 +10,10 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+// The web demo at schools.townconnect.co.za/try-demo is bound to Highveld Academy.
+// Override via the request body when we add multi-school chat widgets later.
+const DEFAULT_SCHOOL_SLUG = 'highveld-academy';
+
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: CORS_HEADERS, body: '' };
@@ -18,15 +23,41 @@ export const handler = async (event) => {
     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method not allowed' };
   }
 
+  const t0 = Date.now();
+  let bodyJson;
   try {
-    const { message } = JSON.parse(event.body || '{}');
-    if (!message) {
+    bodyJson = JSON.parse(event.body || '{}');
+  } catch {
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ error: 'Bad JSON' }),
+    };
+  }
+
+  const { message, schoolSlug } = bodyJson;
+  if (!message) {
+    return {
+      statusCode: 400,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({ error: 'No message provided' }),
+    };
+  }
+
+  const slug = schoolSlug || DEFAULT_SCHOOL_SLUG;
+
+  try {
+    const school = await resolveSchool({ slug });
+    if (!school) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ error: 'No message provided' }),
+        body: JSON.stringify({ error: `School "${slug}" not found` }),
       };
     }
+
+    const fullData = await getFullData(school.id);
+    const systemPrompt = buildSystemPrompt(fullData);
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
     const response = await fetch(url, {
@@ -34,7 +65,7 @@ export const handler = async (event) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: message }] }],
-        systemInstruction: { parts: [{ text: buildSystemPrompt() }] },
+        systemInstruction: { parts: [{ text: systemPrompt }] },
         generationConfig: { maxOutputTokens: 1024, temperature: 0.3 },
       }),
     });
@@ -49,6 +80,19 @@ export const handler = async (event) => {
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "I couldn't process that. Please try again.";
+    const usage = data?.usageMetadata || {};
+
+    await logQuery({
+      school_id: school.id,
+      parent_phone: null,
+      prefix_used: null,
+      message_text: message,
+      response_text: reply,
+      tokens_in: usage.promptTokenCount ?? null,
+      tokens_out: usage.candidatesTokenCount ?? null,
+      latency_ms: Date.now() - t0,
+      status: 'answered',
+    });
 
     return {
       statusCode: 200,
@@ -57,6 +101,13 @@ export const handler = async (event) => {
     };
   } catch (err) {
     console.error('[Chat] Error:', err);
+    await logQuery({
+      parent_phone: null,
+      message_text: message,
+      latency_ms: Date.now() - t0,
+      status: 'error',
+      error_detail: String(err?.message || err),
+    });
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
