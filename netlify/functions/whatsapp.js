@@ -155,26 +155,23 @@ export const handler = async (event) => {
 
     if (!school) {
       if (prefix) {
-        await sendWhatsAppReply(
-          senderPhone,
-          `Sorry, I don't recognise the school code "${prefix}". Please check the code or contact your school directly.`,
-          ourPhoneId
-        );
+        const reply = `Sorry, I don't recognise the school code *${prefix}*. Please check the code on your school's signup page — codes must be in CAPITAL LETTERS, 2-6 characters, like HVA or STA. If you're sure the code is right, contact your school directly.`;
+        await sendWhatsAppReply(senderPhone, reply, ourPhoneId);
         await logQuery({
           parent_phone: senderPhone,
           prefix_used: prefix,
           message_text: userMessage,
+          response_text: reply,
           status: 'unknown_prefix',
         });
       } else {
-        await sendWhatsAppReply(
-          senderPhone,
-          'Hi! Please start your message with your school\'s code, like "HVA fees grade 10" or "STA next sport fixture". The code is on your school\'s WhatsApp page.',
-          ourPhoneId
-        );
+        const reply =
+          "Hi! Please start your message with your school's code in CAPITAL LETTERS, like *HVA fees grade 10* or *STA next sport fixture*. The code is on your school's WhatsApp signup page. (Use capitals — lowercase doesn't work.)";
+        await sendWhatsAppReply(senderPhone, reply, ourPhoneId);
         await logQuery({
           parent_phone: senderPhone,
           message_text: userMessage,
+          response_text: reply,
           status: 'no_prefix',
         });
       }
