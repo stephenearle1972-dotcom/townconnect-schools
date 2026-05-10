@@ -196,7 +196,12 @@ Produce the summary now.`;
         contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
         generationConfig: {
           temperature: 0.1,
-          maxOutputTokens: 1500,
+          // Gemini 2.5 Flash defaults to thinking-on; with a small token budget the model
+          // burns most tokens on internal reasoning and emits ~60 visible tokens, so the
+          // summary truncates at the first heading. Disable thinking and give the visible
+          // output enough room for a full ~2000-char summary.
+          maxOutputTokens: 4000,
+          thinkingConfig: { thinkingBudget: 0 },
         },
       }),
     }
