@@ -5,6 +5,7 @@
 
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["pdf-parse", "pdfjs-dist", "@napi-rs/canvas", "mammoth"]
 
 [[redirects]]
   from = "/api/*"

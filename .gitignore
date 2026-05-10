@@ -20,6 +20,9 @@ dist-ssr
 # Netlify CLI
 .netlify/
 
+# Local test fixtures
+test-fixtures/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

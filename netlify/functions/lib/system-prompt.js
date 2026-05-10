@@ -1,12 +1,67 @@
 // Builds the Gemini system prompt from a school's full data blob.
 // Receives the JSON returned by get_school_full_data().
 
+import { getSupabase } from './supabase.js';
+
+const SIGNED_URL_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
+const BOOST_FULL_TEXT_CHARS = 4000;
+
 function fmtDate(d) {
   if (!d) return '';
   return String(d).slice(0, 10);
 }
 
-export function buildSystemPrompt(fullData) {
+function splitStoragePath(storagePath) {
+  if (!storagePath) return { bucket: 'school-files', objectPath: '' };
+  const idx = storagePath.indexOf('/');
+  if (idx <= 0) return { bucket: 'school-files', objectPath: storagePath };
+  return { bucket: storagePath.slice(0, idx), objectPath: storagePath.slice(idx + 1) };
+}
+
+async function buildFileUrl(storagePath) {
+  const { bucket, objectPath } = splitStoragePath(storagePath);
+  if (!objectPath) return null;
+  try {
+    const supabase = getSupabase();
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .createSignedUrl(objectPath, SIGNED_URL_TTL_SECONDS);
+    if (error || !data?.signedUrl) return null;
+    return data.signedUrl;
+  } catch (e) {
+    console.error('createSignedUrl failed for', storagePath, e);
+    return null;
+  }
+}
+
+async function formatFilesForPrompt(files) {
+  if (!files || files.length === 0) return 'No documents on file.';
+
+  const processed = files.filter(f => f.extraction_status === 'processed' && f.summary);
+  const otherCount = files.length - processed.length;
+
+  if (processed.length === 0) {
+    return `${files.length} document(s) on file but none have been processed yet — tell parents the school will share specific files on request.`;
+  }
+
+  const blocks = await Promise.all(processed.map(async f => {
+    const fileLink = await buildFileUrl(f.storage_path);
+    const linkLine = fileLink ? `Public link: ${fileLink}` : 'Public link: (link unavailable — ask the school for this file)';
+    return `## ${f.filename} (${f.category || 'general'})
+${linkLine}
+Summary:
+${f.summary}`;
+  }));
+
+  let trailer = '';
+  if (otherCount > 0) {
+    trailer = `\n\n(${otherCount} additional document(s) are on file but not yet processed for question-answering. Mention them by name only if asked.)`;
+  }
+
+  return `These are the school's documents. Use them to answer questions. If a parent asks for a specific document, you may share its Public link directly.\n\n${blocks.join('\n\n')}${trailer}`;
+}
+
+export async function buildSystemPrompt(fullData, opts = {}) {
   const {
     school,
     teachers = [],
@@ -23,6 +78,22 @@ export function buildSystemPrompt(fullData) {
   const today = new Date();
   const todayStr = today.toISOString().slice(0, 10);
   const dayName = today.toLocaleDateString('en-ZA', { weekday: 'long' });
+
+  const filesBlock = await formatFilesForPrompt(files);
+
+  let boostBlock = '';
+  if (opts.boostFile && opts.boostFile.extracted_text) {
+    const f = opts.boostFile;
+    const fullText = String(f.extracted_text).slice(0, BOOST_FULL_TEXT_CHARS);
+    boostBlock = `=== RELEVANT DOCUMENT (full text) ===
+The parent's question appears related to "${f.filename}". Below is the first ${BOOST_FULL_TEXT_CHARS} characters of that document — quote from it directly when answering.
+
+${fullText}
+
+=== END RELEVANT DOCUMENT ===
+
+`;
+  }
 
   return `You are the WhatsApp assistant for ${school.name}, a school in South Africa.
 
@@ -42,7 +113,7 @@ Principal: ${school.principal_name || 'not on file'}
 Contact: ${school.contact_email || ''}${school.contact_phone ? ', ' + school.contact_phone : ''}
 Address: ${school.address || 'not on file'}
 
-=== ACTIVE NOTICES ===
+${boostBlock}=== ACTIVE NOTICES ===
 ${notices_active.length === 0 ? 'No active notices.' : notices_active.map(n =>
   `[${(n.urgency || 'normal').toUpperCase()}] ${n.title} (${fmtDate(n.publish_at)})\n${n.body}`
 ).join('\n\n')}
@@ -87,9 +158,36 @@ ${narrative.length === 0 ? 'No narrative content on file.' : narrative.map(n =>
   `## ${n.title}\n${(n.body || '').replace(/<[^>]+>/g, '')}`
 ).join('\n\n')}
 
-=== FILES AVAILABLE ===
-${files.length === 0 ? 'No files.' : files.map(f =>
-  `${f.filename} (${f.category || 'uncategorised'})`
-).join('\n')}
+=== SCHOOL DOCUMENTS ===
+${filesBlock}
 `;
+}
+
+const STOP_WORDS = new Set([
+  'the','a','an','is','are','what','when','how','do','does','to','of','for','in','at','my','our','i','we','please',
+  'can','you','have','has','will','was','were','any','some','this','that','about','school','tell','me','need','want',
+]);
+
+export function extractKeywords(text) {
+  if (!text) return [];
+  return text.toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
+}
+
+export function scoreFileMatch(file, keywords) {
+  const haystack = ((file.filename || '') + ' ' + (file.category || '') + ' ' + (file.summary || '')).toLowerCase();
+  return keywords.reduce((s, k) => s + (haystack.includes(k) ? 1 : 0), 0);
+}
+
+export function pickBoostFile(files, messageText) {
+  const keywords = extractKeywords(messageText);
+  if (keywords.length === 0) return null;
+  const scored = (files || [])
+    .filter(f => f.extraction_status === 'processed' && f.extracted_text)
+    .map(f => ({ file: f, score: scoreFileMatch(f, keywords) }))
+    .filter(s => s.score >= 2)
+    .sort((a, b) => b.score - a.score);
+  return scored[0]?.file ?? null;
 }
