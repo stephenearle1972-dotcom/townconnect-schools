@@ -1,5 +1,5 @@
 import { resolveSchool, getFullData, logQuery } from './lib/school-resolver.js';
-import { buildSystemPrompt, pickBoostFile } from './lib/system-prompt.js';
+import { buildSystemPrompt, pickBoost } from './lib/system-prompt.js';
 
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
@@ -200,8 +200,8 @@ export const handler = async (event) => {
     const t0 = Date.now();
     try {
       const fullData = await getFullData(school.id);
-      const boostFile = pickBoostFile(fullData?.files, querySansPrefix || userMessage);
-      const systemPrompt = await buildSystemPrompt(fullData, { boostFile });
+      const { file: boostFile, keywords } = pickBoost(fullData?.files, querySansPrefix || userMessage);
+      const systemPrompt = await buildSystemPrompt(fullData, { boostFile, keywords });
       const result = await callGemini(systemPrompt, querySansPrefix || userMessage);
       const answer = result.text || "I couldn't generate an answer. Please try again or contact the school directly.";
       await sendWhatsAppReply(senderPhone, answer, ourPhoneId);

@@ -1,5 +1,5 @@
 import { resolveSchool, getFullData, logQuery } from './lib/school-resolver.js';
-import { buildSystemPrompt, pickBoostFile } from './lib/system-prompt.js';
+import { buildSystemPrompt, pickBoost } from './lib/system-prompt.js';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
@@ -57,8 +57,8 @@ export const handler = async (event) => {
     }
 
     const fullData = await getFullData(school.id);
-    const boostFile = pickBoostFile(fullData?.files, message);
-    const systemPrompt = await buildSystemPrompt(fullData, { boostFile });
+    const { file: boostFile, keywords } = pickBoost(fullData?.files, message);
+    const systemPrompt = await buildSystemPrompt(fullData, { boostFile, keywords });
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
     const response = await fetch(url, {

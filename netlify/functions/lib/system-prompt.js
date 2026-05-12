@@ -84,11 +84,12 @@ export async function buildSystemPrompt(fullData, opts = {}) {
   let boostBlock = '';
   if (opts.boostFile && opts.boostFile.extracted_text) {
     const f = opts.boostFile;
-    const fullText = String(f.extracted_text).slice(0, BOOST_FULL_TEXT_CHARS);
+    const keywords = Array.isArray(opts.keywords) ? opts.keywords : [];
+    const window = extractRelevantWindow(String(f.extracted_text), keywords, BOOST_FULL_TEXT_CHARS);
     boostBlock = `=== RELEVANT DOCUMENT (full text) ===
-The parent's question appears related to "${f.filename}". Below is the first ${BOOST_FULL_TEXT_CHARS} characters of that document — quote from it directly when answering.
+The parent's question appears related to "${f.filename}". Below is the most relevant ${BOOST_FULL_TEXT_CHARS}-character window from that document — quote from it directly when answering.
 
-${fullText}
+${window}
 
 === END RELEVANT DOCUMENT ===
 
@@ -185,17 +186,42 @@ export function extractKeywords(text) {
 }
 
 export function scoreFileMatch(file, keywords) {
-  const haystack = ((file.filename || '') + ' ' + (file.category || '') + ' ' + (file.summary || '')).toLowerCase();
+  const haystack = (
+    (file.filename || '') + ' ' +
+    (file.category || '') + ' ' +
+    (file.summary || '') + ' ' +
+    ((file.topic_keywords || []).join(' '))
+  ).toLowerCase();
   return keywords.reduce((s, k) => s + (haystack.includes(k) ? 1 : 0), 0);
 }
 
-export function pickBoostFile(files, messageText) {
+export function pickBoost(files, messageText) {
   const keywords = extractKeywords(messageText);
-  if (keywords.length === 0) return null;
+  if (keywords.length === 0) return { file: null, keywords };
   const scored = (files || [])
     .filter(f => f.extraction_status === 'processed' && f.extracted_text)
     .map(f => ({ file: f, score: scoreFileMatch(f, keywords) }))
-    .filter(s => s.score >= 2)
+    .filter(s => s.score >= 1)
     .sort((a, b) => b.score - a.score);
-  return scored[0]?.file ?? null;
+  return { file: scored[0]?.file ?? null, keywords };
+}
+
+// Legacy single-value helper retained for any caller that only wants the file.
+export function pickBoostFile(files, messageText) {
+  return pickBoost(files, messageText).file;
+}
+
+export function extractRelevantWindow(fullText, keywords, windowSize = BOOST_FULL_TEXT_CHARS) {
+  if (!fullText) return '';
+  if (fullText.length <= windowSize) return fullText;
+  const lower = fullText.toLowerCase();
+  const positions = (keywords || [])
+    .map(k => lower.indexOf(k))
+    .filter(p => p >= 0)
+    .sort((a, b) => a - b);
+  if (positions.length === 0) return fullText.slice(0, windowSize);
+  const firstHit = positions[0];
+  const start = Math.max(0, firstHit - 500);
+  const end = Math.min(fullText.length, start + windowSize);
+  return fullText.slice(start, end);
 }

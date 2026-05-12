@@ -132,11 +132,14 @@ export const handler = async (event) => {
       text: finalText,
     });
 
+    const topicKeywords = await extractTopicKeywords({ filename: file.filename, summary });
+
     await supabase
       .from('files')
       .update({
         extracted_text: finalText,
         summary,
+        topic_keywords: topicKeywords,
         extraction_status: 'processed',
         extraction_error: truncated
           ? `Document truncated to first ${MAX_EXTRACTED_CHARS} characters for processing. Consider splitting long documents.`
@@ -145,7 +148,7 @@ export const handler = async (event) => {
       })
       .eq('id', file_id);
 
-    return ok({ status: 'processed', summary_chars: summary.length, truncated });
+    return ok({ status: 'processed', summary_chars: summary.length, topic_keywords: topicKeywords, truncated });
   } catch (e) {
     await supabase
       .from('files')
@@ -165,17 +168,21 @@ async function summariseWithGemini({ filename, category, text }) {
 
   const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
-  const systemInstruction = `You are summarising a document for a WhatsApp school assistant. The bot will use your summary to answer parents' questions about this document, so the summary must:
+  const systemInstruction = `You are summarising a document for a WhatsApp school assistant. Parents will ask questions about anything in this document. Your summary is the bot's only knowledge of this document, so coverage matters more than depth.
 
-- Capture the key facts, numbers, dates, rules, and policies in the document.
-- Preserve specific phrases that parents are likely to ask about (e.g. "cell phones", "uniform", "drop-off times", "homework policy").
-- Use clear sub-headings (## Heading) to make sections retrievable.
-- Be at most ${SUMMARY_TARGET_CHARS} characters. If the source is short, your summary can be shorter.
-- Be in the same language as the source. Don't translate.
-- NEVER add facts not in the source. NEVER guess or pad.
-- If the document is mostly tabular (e.g. a fee schedule), preserve every row as a list item.
+REQUIREMENTS:
+1. Identify EVERY top-level section in the source (look for headings, numbered sections, or clear topic shifts).
+2. For each section, produce at least one short bullet capturing the key facts, numbers, dates, rules, prices, or policies in that section.
+3. Use a "## Section Name" heading for each section, followed by 1-3 bullet points.
+4. Preserve specific numbers and proper nouns parents are likely to ask about (times like "07:30", durations like "7 days", prices like "R45", section numbers like "section 3.2").
+5. If a section has multiple sub-rules (e.g. consequences after 1st/2nd/3rd offence), keep all of them — these are the kinds of details parents ask about.
+6. Be at most ${SUMMARY_TARGET_CHARS} characters TOTAL across all sections. If you must trade depth for breadth, trade depth — never drop a section entirely.
+7. Be in the same language as the source. Don't translate.
+8. NEVER add facts not in the source. NEVER guess or pad.
+9. For tabular content (e.g. fee schedules, menus), preserve every row as a list item with both the item name AND the price.
 
-Output the summary directly. No preamble, no "here is the summary".`;
+OUTPUT FORMAT:
+Output ONLY the summary. No preamble, no "here is the summary", no closing remark. Start with the first "## Section Name" heading immediately.`;
 
   const userPrompt = `File name: ${filename}
 Category: ${category}
@@ -219,4 +226,52 @@ Produce the summary now.`;
   return summary.length > SUMMARY_TARGET_CHARS + 200
     ? summary.slice(0, SUMMARY_TARGET_CHARS) + '...'
     : summary;
+}
+
+async function extractTopicKeywords({ filename, summary }) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return [];
+
+  const prompt = `From the school document below, list 8-15 SHORT topic keywords (single words or 2-word phrases) that parents might use when asking questions about this document. Focus on:
+- Topics covered (e.g. "uniform", "cell phones", "homework", "fees", "menu", "tuck shop")
+- Common parent question words for each topic (e.g. "rules", "policy", "discipline", "late", "absent", "hours")
+- Specific items if it's a price list (e.g. "burger", "sandwich", "drinks")
+
+Output ONLY a JSON array of lowercase strings. No prose. Example: ["uniform", "rules", "cell phones", "punctuality", "late", "detention", "homework", "discipline", "policy", "code of conduct"]
+
+Filename: ${filename}
+Summary:
+${summary}`;
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 200,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        }),
+      }
+    );
+    if (!response.ok) return [];
+    const json = await response.json();
+    const text = json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+    const arr = JSON.parse(cleaned);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .filter(s => typeof s === 'string')
+      .map(s => s.toLowerCase().trim())
+      .filter(s => s.length >= 2 && s.length <= 40)
+      .slice(0, 20);
+  } catch (e) {
+    console.error('extractTopicKeywords failed:', e);
+    return [];
+  }
 }
