@@ -64,6 +64,43 @@ export async function getFullData(schoolId) {
   return data;
 }
 
+export async function getRelevantSections({ schoolId, keywords, maxSections = 3 }) {
+  if (!keywords || keywords.length === 0) return [];
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from('file_sections')
+    .select('*, files!inner(filename, category, extraction_status)')
+    .eq('school_id', schoolId)
+    .eq('files.extraction_status', 'processed');
+
+  if (error || !data) return [];
+
+  const scored = data.map(sec => {
+    const titleHay = (sec.section_title || '').toLowerCase();
+    const summaryHay = (sec.section_summary || '').toLowerCase();
+    const textHay = (sec.section_text || '').toLowerCase();
+    const kwHay = (sec.topic_keywords || []).join(' ').toLowerCase();
+
+    let score = 0;
+    for (const k of keywords) {
+      const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(`\\b${escaped}\\b`, 'i');
+      if (re.test(kwHay)) score += 3;
+      if (re.test(titleHay)) score += 2;
+      if (re.test(summaryHay)) score += 1;
+      if (re.test(textHay)) score += 1;
+    }
+    return { sec, score };
+  });
+
+  return scored
+    .filter(s => s.score >= 2)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxSections)
+    .map(s => s.sec);
+}
+
 export async function logQuery(entry) {
   // Best-effort fire-and-forget. Log failures don't fail the user request.
   try {

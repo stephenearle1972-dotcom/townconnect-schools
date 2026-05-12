@@ -1,4 +1,5 @@
 import { getSupabase } from './lib/supabase.js';
+import { splitIntoSections } from './lib/section-splitter.js';
 import { PDFParse } from 'pdf-parse';
 import mammoth from 'mammoth';
 
@@ -148,7 +149,59 @@ export const handler = async (event) => {
       })
       .eq('id', file_id);
 
-    return ok({ status: 'processed', summary_chars: summary.length, topic_keywords: topicKeywords, truncated });
+    let sectionCount = 0;
+    try {
+      const sections = splitIntoSections(finalText);
+
+      await supabase.from('file_sections').delete().eq('file_id', file_id);
+
+      // Fan out per-section Gemini calls in parallel batches to stay inside the
+      // Lambda budget. summary and keywords don't depend on each other, so we
+      // run them in parallel per section. CONCURRENCY=6 keeps us under typical
+      // Gemini per-second rate limits without serialising 26+ sections.
+      const CONCURRENCY = 6;
+      const sectionRows = new Array(sections.length);
+
+      async function processOne(i) {
+        const sec = sections[i];
+        const [sectionSummary, keywords] = await Promise.all([
+          sec.text.length > 300 ? summariseSection({ title: sec.title, text: sec.text }) : Promise.resolve(sec.text),
+          extractSectionKeywords({ title: sec.title, text: sec.text, summary: '' }),
+        ]);
+        sectionRows[i] = {
+          file_id,
+          school_id: file.school_id,
+          section_index: i,
+          section_title: sec.title,
+          section_text: sec.text,
+          section_summary: sectionSummary,
+          topic_keywords: keywords,
+          char_count: sec.text.length,
+        };
+      }
+
+      for (let i = 0; i < sections.length; i += CONCURRENCY) {
+        const slice = sections.slice(i, i + CONCURRENCY).map((_, j) => processOne(i + j));
+        await Promise.all(slice);
+      }
+
+      const filled = sectionRows.filter(Boolean);
+      if (filled.length > 0) {
+        const { error: secErr } = await supabase.from('file_sections').insert(filled);
+        if (secErr) console.error('file_sections insert failed:', secErr);
+        else sectionCount = filled.length;
+      }
+    } catch (e) {
+      console.error('section split/store failed (non-fatal):', e);
+    }
+
+    return ok({
+      status: 'processed',
+      summary_chars: summary.length,
+      topic_keywords: topicKeywords,
+      section_count: sectionCount,
+      truncated,
+    });
   } catch (e) {
     await supabase
       .from('files')
@@ -226,6 +279,80 @@ Produce the summary now.`;
   return summary.length > SUMMARY_TARGET_CHARS + 200
     ? summary.slice(0, SUMMARY_TARGET_CHARS) + '...'
     : summary;
+}
+
+async function summariseSection({ title, text }) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return text.slice(0, 400);
+
+  const prompt = `Summarise the school document section below in at most 400 characters. Capture the key facts, numbers, rules, and consequences. Preserve specific terms parents will ask about. Output ONLY the summary text, no preamble.
+
+${title ? `Section: ${title}\n\n` : ''}${text}`;
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 600,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        }),
+      },
+    );
+    if (!res.ok) return text.slice(0, 400);
+    const json = await res.json();
+    return json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || text.slice(0, 400);
+  } catch {
+    return text.slice(0, 400);
+  }
+}
+
+async function extractSectionKeywords({ title, text, summary }) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return [];
+
+  const prompt = `From the school document section below, list 5-12 SHORT keywords or 2-word phrases (lowercase) that parents would use to ask about this specific section. Include topic words AND common question words parents use. Output ONLY a JSON array, no prose.
+
+Example output: ["uniform","blazer","tie","grey","shoes","dress code"]
+
+${title ? `Section: ${title}\n\n` : ''}Summary: ${summary || ''}\n\nText: ${(text || '').slice(0, 1500)}`;
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 200,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        }),
+      },
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+    const arr = JSON.parse(cleaned);
+    return Array.isArray(arr)
+      ? arr.filter(s => typeof s === 'string')
+           .map(s => s.toLowerCase().trim())
+           .filter(s => s.length >= 2 && s.length <= 40)
+           .slice(0, 15)
+      : [];
+  } catch {
+    return [];
+  }
 }
 
 async function extractTopicKeywords({ filename, summary }) {
