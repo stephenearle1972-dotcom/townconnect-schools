@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TownConnect Schools — Live App Demo</title>
+<style>
+  :root{
+    --wa-header:#008069;--wa-bg:#efeae2;--wa-out:#d9fdd3;--wa-in:#ffffff;
+    --wa-ink:#111b21;--wa-sub:#667781;--tc-teal:#2f8f8f;--tc-ink:#1f2d3a;
+    --urgent:#c0392b;--bot:#1f6feb;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #eaf2f1 0%, #dfe6e6 45%, #d3dcdc 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 12px;gap:14px;min-height:100%;}
+
+  .phone{width:380px;max-width:96vw;height:780px;max-height:88vh;background:#000;border-radius:46px;padding:12px;
+    box-shadow:0 30px 70px rgba(20,40,40,.35),0 2px 6px rgba(0,0,0,.4);position:relative;}
+  .screen{width:100%;height:100%;background:var(--wa-bg);border-radius:36px;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#000;border-radius:16px;z-index:30;}
+
+  .statusbar{background:var(--wa-header);color:#fff;height:42px;flex:0 0 42px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 6px;font-size:13px;font-weight:600;}
+  .statusbar .right{display:flex;gap:6px;align-items:center;}
+
+  .views{flex:1;position:relative;overflow:hidden;}
+  .view{position:absolute;inset:0;display:none;flex-direction:column;}
+  .view.active{display:flex;animation:slide .22s ease-out;}
+  @keyframes slide{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:none;}}
+
+  .chathead{background:var(--wa-header);color:#fff;display:flex;align-items:center;gap:10px;padding:8px 12px 10px;flex:0 0 auto;}
+  .chathead .back{font-size:24px;line-height:1;opacity:.95;cursor:pointer;}
+  .avatar{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex:0 0 40px;color:var(--tc-teal);box-shadow:inset 0 0 0 2px rgba(255,255,255,.5);}
+  .avatar svg{width:22px;height:22px;}
+  .who{flex:1;min-width:0;}
+  .who .name{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .who .status{font-size:12px;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .listhead{flex-direction:column;align-items:flex-start;gap:2px;padding:10px 16px 12px;}
+  .listhead .apptitle{font-size:20px;font-weight:700;letter-spacing:.2px;}
+  .listhead .appsub{font-size:11.5px;color:rgba(255,255,255,.8);font-weight:500;}
+  .listbody{flex:1;overflow-y:auto;background:#fff;}
+  .chatrow{display:flex;gap:12px;padding:12px 14px;cursor:pointer;border-bottom:1px solid #f1f1f1;align-items:center;}
+  .chatrow:hover{background:#f7faf9;}.chatrow:active{background:#eef5f3;}
+  .av{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 50px;font-weight:800;font-size:16px;color:#fff;}
+  .av svg{width:26px;height:26px;fill:#fff;}
+  .av.broadcast{background:#0a7d6b;}.av.assistant{background:#1f6feb;}.av.office{background:#6b4fa0;}.av.group{background:#d68910;}
+  .row-main{flex:1;min-width:0;}
+  .row-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .row-name{font-weight:600;font-size:15.5px;color:#111b21;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row-time{font-size:11px;color:#8696a0;flex:0 0 auto;}
+  .row-prev{font-size:13px;color:#667781;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;display:flex;align-items:center;gap:5px;}
+  .tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:5px;margin-left:6px;}
+  .tag.ai{background:var(--bot);color:#fff;}.tag.official{background:#0a7d6b;color:#fff;}
+  .badge{background:#25d366;color:#fff;border-radius:12px;min-width:19px;height:19px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;flex:0 0 auto;}
+  .clip{width:13px;height:13px;fill:#667781;}
+  .mini-mention{color:var(--bot);font-weight:600;}
+  .privacy{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#f6f8f7;border-top:1px solid #ececec;color:#5a6b74;font-size:11.5px;line-height:1.35;}
+  .privacy svg{width:15px;height:15px;fill:#0a7d6b;flex:0 0 15px;}
+
+  .feed{flex:1;overflow-y:auto;padding:14px 10px 10px;display:flex;flex-direction:column;gap:6px;
+    background-image:linear-gradient(rgba(229,221,213,.55),rgba(229,221,213,.55)),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='%23cabfb0' fill-opacity='0.25'><circle cx='8' cy='8' r='1.5'/><circle cx='30' cy='22' r='1.2'/><circle cx='50' cy='12' r='1.4'/><circle cx='18' cy='42' r='1.2'/><circle cx='44' cy='48' r='1.5'/></g></svg>");}
+  .daydivider{align-self:center;background:#e1f2fb;color:#5b7083;font-size:11px;padding:4px 10px;border-radius:8px;margin:2px 0 6px;}
+  .sysnote{align-self:center;background:#fff5d6;color:#7a6a2f;font-size:10.5px;padding:5px 12px;border-radius:8px;margin:2px 16px 6px;text-align:center;line-height:1.4;}
+  .bubble{max-width:82%;padding:7px 10px 18px;border-radius:8px;position:relative;font-size:14.5px;line-height:1.38;color:var(--wa-ink);box-shadow:0 1px .5px rgba(0,0,0,.13);white-space:pre-wrap;word-wrap:break-word;animation:pop .18s ease-out;}
+  @keyframes pop{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .bubble.in{align-self:flex-start;background:var(--wa-in);border-top-left-radius:2px;}
+  .bubble.out{align-self:flex-end;background:var(--wa-out);border-top-right-radius:2px;}
+  .bubble.urgent{border-left:4px solid var(--urgent);}
+  .bubble .urgenttag{display:inline-block;background:var(--urgent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;margin-bottom:5px;}
+  .bubble .sender{font-size:12px;font-weight:700;color:#0a7d6b;margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+  .bubble .sender.botname{color:var(--bot);}
+  .ai-badge{background:var(--bot);color:#fff;font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:4px;}
+  .mention{color:var(--bot);font-weight:600;}
+  .bubble .time{position:absolute;right:9px;bottom:4px;font-size:10px;color:var(--wa-sub);display:flex;align-items:center;gap:3px;}
+  .bubble.out .time{color:#5a8f6a;}
+  .tick{width:15px;height:11px;}
+  .filecard{display:flex;gap:10px;align-items:center;background:#f3f4f5;border-radius:8px;padding:8px 10px;margin-top:6px;border:1px solid #e6e8ea;}
+  .fileicon{width:34px;height:40px;border-radius:5px;background:var(--urgent);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;flex:0 0 34px;}
+  .filemeta{flex:1;min-width:0;}
+  .filemeta .fn{font-size:13px;font-weight:600;color:#111b21;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .filemeta .fs{font-size:11px;color:#8696a0;margin-top:1px;}
+  .dl{width:18px;height:18px;fill:#667781;flex:0 0 18px;}
+
+  .typing{align-self:flex-start;background:#fff;border-radius:8px;border-top-left-radius:2px;padding:11px 12px;display:flex;gap:4px;box-shadow:0 1px .5px rgba(0,0,0,.13);}
+  .typing span{width:7px;height:7px;border-radius:50%;background:#9aa6ac;animation:blink 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;}.typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,60%,100%{opacity:.3;}30%{opacity:1;transform:translateY(-3px);}}
+
+  .chips{display:flex;gap:7px;overflow-x:auto;padding:8px 10px;flex:0 0 auto;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto;background:#fff;border:1px solid #d6ddd9;color:var(--tc-ink);font-size:12.5px;padding:7px 12px;border-radius:16px;white-space:nowrap;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .chip:active{transform:scale(.96);}
+
+  .composer{display:flex;align-items:flex-end;gap:8px;padding:6px 8px 10px;flex:0 0 auto;}
+  .inputwrap{flex:1;background:#fff;border-radius:22px;display:flex;align-items:center;gap:8px;padding:7px 12px;box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .inputwrap textarea{flex:1;border:0;outline:0;resize:none;font-size:15px;font-family:inherit;max-height:90px;line-height:1.3;color:var(--wa-ink);background:transparent;}
+  .inputwrap .glyph{color:#8696a0;font-size:18px;}
+  .sendbtn{width:46px;height:46px;border-radius:50%;background:var(--wa-header);border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 46px;box-shadow:0 2px 6px rgba(0,128,105,.35);}
+  .sendbtn:active{transform:scale(.93);}.sendbtn svg{fill:#fff;}
+  .lockedbar{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:#f0f2f0;color:#7c8a86;font-size:12.5px;flex:0 0 auto;border-top:1px solid #e2e6e3;}
+  .lockedbar svg{width:14px;height:14px;fill:#7c8a86;}
+
+  .caption{text-align:center;color:#3a4b54;font-size:13px;max-width:440px;line-height:1.5;}
+  .caption b{color:var(--tc-teal);}
+  .caption .pill{display:inline-block;background:#fff;border:1px solid #d6ddd9;border-radius:20px;padding:5px 13px;margin-top:7px;font-size:12px;color:#5a6b74;box-shadow:0 1px 2px rgba(0,0,0,.05);}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="statusbar">
+      <span id="clock">07:42</span>
+      <span class="right">
+        <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="7" width="3" height="5" rx="1" fill="#fff"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1" fill="#fff"/><rect x="9" y="2" width="3" height="10" rx="1" fill="#fff"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#fff"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12"><rect x="1" y="1" width="20" height="10" rx="2.5" fill="none" stroke="#fff" stroke-width="1.2"/><rect x="3" y="3" width="14" height="6" rx="1" fill="#fff"/><rect x="22" y="4" width="2" height="4" rx="1" fill="#fff"/></svg>
+      </span>
+    </div>
+
+    <div class="views">
+
+      <!-- ============ LIST ============ -->
+      <div class="view active" id="view-list">
+        <div class="chathead listhead">
+          <div class="apptitle">Acacia Hills Primary</div>
+          <div class="appsub">powered by TownConnect Schools</div>
+        </div>
+        <div class="listbody">
+
+          <div class="chatrow" onclick="showView('broadcast')">
+            <div class="av broadcast"><svg viewBox="0 0 24 24"><path d="M3 10v4a1 1 0 0 0 1 1h2l4 4V5L6 9H4a1 1 0 0 0-1 1zm12.5 2a3.5 3.5 0 0 0-2-3.15v6.3A3.5 3.5 0 0 0 15.5 12zM14 4.2v2.06a5.5 5.5 0 0 1 0 11.48v2.06A7.5 7.5 0 0 0 14 4.2z"/></svg></div>
+            <div class="row-main">
+              <div class="row-top"><span class="row-name">School Broadcasts<span class="tag official">OFFICIAL</span></span><span class="row-time">07:05</span></div>
+              <div class="row-prev"><svg class="clip" viewBox="0 0 24 24"><path d="M16.5 6v11.5a4 4 0 0 1-8 0V5a2.5 2.5 0 0 1 5 0v10.5a1 1 0 0 1-2 0V6H10v9.5a2.5 2.5 0 0 0 5 0V5a4 4 0 0 0-8 0v12.5a5.5 5.5 0 0 0 11 0V6z"/></svg>Term 3 Calendar.pdf · School reopens 21 July</div>
+            </div>
+            <div class="badge">2</div>
+          </div>
+
+          <div class="chatrow" onclick="showView('assistant')">
+            <div class="av assistant"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v1h3a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h3V4a2 2 0 0 1 2-2zM9 11a1.3 1.3 0 1 0 0 2.6A1.3 1.3 0 0 0 9 11zm6 0a1.3 1.3 0 1 0 0 2.6A1.3 1.3 0 0 0 15 11z"/></svg></div>
+            <div class="row-main">
+              <div class="row-top"><span class="row-name">Connie<span class="tag ai">AI</span></span><span class="row-time">07:41</span></div>
+              <div class="row-prev">Your school assistant · <span class="mini-mention">@Connie</span> me in any chat</div>
+            </div>
+          </div>
+
+          <div class="chatrow" onclick="showView('office')">
+            <div class="av office"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg></div>
+            <div class="row-main">
+              <div class="row-top"><span class="row-name">Front Office</span><span class="row-time">Yesterday</span></div>
+              <div class="row-prev">Mrs van Wyk: We will confirm by 07:00 Saturday</div>
+            </div>
+          </div>
+
+          <div class="chatrow" onclick="showView('group')">
+            <div class="av group"><svg viewBox="0 0 24 24"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 2c-3 0-6 1.5-6 4v1h8v-1c0-1.3.5-2.4 1.3-3.3A9 9 0 0 0 8 13z"/></svg></div>
+            <div class="row-main">
+              <div class="row-top"><span class="row-name">Grade 4 Parents</span><span class="row-time">11:04</span></div>
+              <div class="row-prev">M. Botha: <span class="mini-mention">@Connie</span> what time does aftercare end?</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="privacy">
+          <svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5 3.8 9.4 9 11 5.2-1.6 9-6 9-11V5l-9-4zm0 10h7c-.5 4-3.3 7.4-7 8.6V12H5V6.3l7-3.1V11z"/></svg>
+          <span>Private to Acacia Hills Primary. Contacts and data stay with the school. POPIA compliant.</span>
+        </div>
+      </div>
+
+      <!-- ============ BROADCASTS ============ -->
+      <div class="view" id="view-broadcast">
+        <div class="chathead">
+          <span class="back" onclick="showView('list')">‹</span>
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="#2f8f8f"><path d="M3 10v4a1 1 0 0 0 1 1h2l4 4V5L6 9H4a1 1 0 0 0-1 1zm12.5 2a3.5 3.5 0 0 0-2-3.15v6.3A3.5 3.5 0 0 0 15.5 12z"/></svg></div>
+          <div class="who"><div class="name">School Broadcasts</div><div class="status">Official announcements · 248 parents</div></div>
+        </div>
+        <div class="feed" id="feed-broadcast">
+          <div class="daydivider">TODAY</div>
+          <div class="bubble in urgent">
+            <span class="urgenttag">URGENT</span>
+            <div>Good morning parents. Due to a water outage in town, Acacia Hills will close early today at 12:00. Please arrange to collect your child by then. Aftercare is suspended for today only.</div>
+            <span class="time">07:05</span>
+          </div>
+          <div class="bubble in"><div>Reminder: civvies day is this Friday. Pupils may wear casual clothes for a R10 donation to the school feeding scheme.</div><span class="time">07:06</span></div>
+          <div class="bubble in">
+            <div>The Term 3 calendar is attached. School reopens on Monday 21 July.</div>
+            <div class="filecard"><div class="fileicon">PDF</div><div class="filemeta"><div class="fn">Term 3 Calendar 2026.pdf</div><div class="fs">182 KB</div></div><svg class="dl" viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5z"/></svg></div>
+            <span class="time">07:08</span>
+          </div>
+          <div class="sysnote">Broadcasts are one-way. Only the school office can post here.</div>
+        </div>
+        <div class="lockedbar"><svg viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>Only the school can send broadcasts</div>
+      </div>
+
+      <!-- ============ CONNIE (ASSISTANT) ============ -->
+      <div class="view" id="view-assistant">
+        <div class="chathead">
+          <span class="back" onclick="showView('list')">‹</span>
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="#1f6feb"><path d="M12 2a2 2 0 0 1 2 2v1h3a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h3V4a2 2 0 0 1 2-2zM9 11a1.3 1.3 0 1 0 0 2.6A1.3 1.3 0 0 0 9 11zm6 0a1.3 1.3 0 1 0 0 2.6A1.3 1.3 0 0 0 15 11z"/></svg></div>
+          <div class="who"><div class="name">Connie</div><div class="status" id="asst-status">School assistant · always on</div></div>
+        </div>
+        <div class="feed" id="feed-assistant">
+          <div class="daydivider">TODAY</div>
+          <div class="bubble in"><div>Hi, I'm Connie, the Acacia Hills assistant. Ask me here about fees, term dates, sport, transport, uniforms, hours or contacts. You can also type @Connie in any chat and I'll answer right there.</div><span class="time">07:41</span></div>
+        </div>
+        <div class="chips" id="chips"></div>
+        <div class="composer">
+          <div class="inputwrap"><span class="glyph">＋</span><textarea id="input" rows="1" placeholder="Message Connie"></textarea><span class="glyph">📷</span></div>
+          <button class="sendbtn" id="send" aria-label="Send"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
+        </div>
+      </div>
+
+      <!-- ============ FRONT OFFICE ============ -->
+      <div class="view" id="view-office">
+        <div class="chathead">
+          <span class="back" onclick="showView('list')">‹</span>
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="#6b4fa0"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg></div>
+          <div class="who"><div class="name">Front Office</div><div class="status">Mon to Fri · 07:30 to 15:00</div></div>
+        </div>
+        <div class="feed" id="feed-office">
+          <div class="daydivider">YESTERDAY</div>
+          <div class="bubble out"><div>Good afternoon. Will Saturday's netball match still go ahead if it rains?</div><span class="time">14:20<svg class="tick" viewBox="0 0 18 12"><path d="M1 6.5L4.5 10 11 2.5" fill="none" stroke="#53bdeb" stroke-width="1.4"/><path d="M6 6.5L9.5 10 16 2.5" fill="none" stroke="#53bdeb" stroke-width="1.4"/></svg></span></div>
+          <div class="bubble in"><div class="sender">Mrs van Wyk · Front Office</div><div>Good afternoon. If it rains we move to the indoor court. We will send a broadcast by 07:00 Saturday to confirm.</div><span class="time">14:34</span></div>
+          <div class="sysnote">Messages with the office are saved to the school's records. Tip: type @Connie for an instant answer.</div>
+        </div>
+        <div class="composer">
+          <div class="inputwrap"><span class="glyph">＋</span><textarea id="input-office" rows="1" placeholder="Message the office, or @Connie"></textarea><span class="glyph">📷</span></div>
+          <button class="sendbtn" id="send-office" aria-label="Send"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
+        </div>
+      </div>
+
+      <!-- ============ GROUP ============ -->
+      <div class="view" id="view-group">
+        <div class="chathead">
+          <span class="back" onclick="showView('list')">‹</span>
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="#d68910"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 2c-3 0-6 1.5-6 4v1h8v-1c0-1.3.5-2.4 1.3-3.3A9 9 0 0 0 8 13z"/></svg></div>
+          <div class="who"><div class="name">Grade 4 Parents</div><div class="status">Moderated by the school · 32 members</div></div>
+        </div>
+        <div class="feed" id="feed-group">
+          <div class="daydivider">TODAY</div>
+          <div class="bubble in"><div class="sender">Mrs Mokoena · Teacher</div><div>Good day parents. A reminder that the museum outing forms are due this Friday. Please send R80 with your child.</div><span class="time">10:40</span></div>
+          <div class="bubble in"><div class="sender">L. Naidoo · Parent</div><div>Thank you Mrs Mokoena. Is the R80 for transport and entry?</div><span class="time">10:52</span></div>
+          <div class="bubble in"><div class="sender">Mrs Mokoena · Teacher</div><div>Yes, it covers both. Pupils should bring their own lunch.</div><span class="time">10:55</span></div>
+          <div class="bubble in"><div class="sender">M. Botha · Parent</div><div>@Connie what time does aftercare end?</div><span class="time">11:04</span></div>
+          <div class="bubble in"><div class="sender botname">Connie <span class="ai-badge">AI</span></div><div>Aftercare runs until 17:30 on school days, at R650 per month per child. It includes a light snack and homework supervision.</div><span class="time">11:04</span></div>
+          <div class="sysnote">Moderated by the school. Type @Connie to ask the assistant right here.</div>
+        </div>
+        <div class="composer">
+          <div class="inputwrap"><span class="glyph">＋</span><textarea id="input-group" rows="1" placeholder="Message, or @Connie for help"></textarea><span class="glyph">📷</span></div>
+          <button class="sendbtn" id="send-group" aria-label="Send"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="caption">
+  A white-labelled school app that looks and feels exactly like WhatsApp, on the school's own controlled data. <b>Meet Connie, your school's AI assistant, available in any chat by typing @Connie.</b><br>
+  <span class="pill">Tap any chat. Try @Connie in the group or the office. Sample school: Acacia Hills Primary · runs on this device</span>
+</div>
+
+<script>
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});}
+tick();setInterval(tick,15000);
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  const f=document.querySelector('#view-'+id+' .feed');
+  if(f) f.scrollTop=f.scrollHeight;
+}
+
+/* ---------- Connie's brain (offline) ---------- */
+const KB=[
+ {k:["aftercare","after care","after-care"],a:"Aftercare runs until 17:30 on school days, at R650 per month per child. It includes a light snack and homework supervision. You can book at the office."},
+ {k:["fee","fees","cost","tuition","how much","payment","afford"],a:"Our 2026 monthly fees are:\n- Grade R: R1,450\n- Grade 1 to 7: R1,850\nThere is a once-off R750 registration fee for new pupils, and a 10% discount from the third child in a family. Fees are due by the 7th of each month."},
+ {k:["term","holiday","holidays","close","reopen","re-open","vakansie"],a:"Term 2 ends on Friday 26 June 2026. Term 3 runs from 21 July to 2 October, and Term 4 from 13 October to 9 December 2026."},
+ {k:["sport","rugby","netball","cricket","fixture","match","saturday","practice","athletics"],a:"This Saturday, 21 June, we have rugby and netball away against Highveld Primary. The bus leaves school at 08:00 and is back around 13:00. Please pack full sport kit, water and a hat."},
+ {k:["bus","transport","route","pickup","pick up","vervoer","shuttle"],a:"We run two bus routes:\n- Route A (town and surrounds): R450 per month, pickup from 06:45\n- Route B (smallholdings and farms): R550 per month, pickup from 06:20\nBookings are done at the office, and a signed indemnity form is needed."},
+ {k:["uniform","tracksuit","shoes","dress code","jersey","what to wear"],a:"Summer uniform is the school dress for girls, or grey shorts and a golf shirt for boys, with black shoes. Winter is the school tracksuit, or grey longs and a school jersey. Our supplier is School Threads in Main Street."},
+ {k:["enrol","enroll","register","registration","admission","admit","apply","application","vacanc","intake"],a:"To enrol, please visit the office between 07:30 and 15:00, or phone 014 717 0042. There is a once-off R750 registration fee, and the office can confirm availability in your child's grade."},
+ {k:["absent","absence","sick","unwell","stay home","siek"],a:"If your child will be absent, please message the office before 08:00 on the day. For absences longer than two days we need a doctor's note."},
+ {k:["civvies","civies","casual day","own clothes"],a:"Civvies day is this Friday. Pupils may wear casual clothes for a R10 donation to the school feeding scheme."},
+ {k:["hour","what time","start time","gate","drop off","drop-off","finish","home time"],a:"School hours are 07:45 to 14:00 for Grade 1 to 7, and 07:45 to 13:00 for Grade R. Gates open at 07:15."},
+ {k:["contact","office","phone","number","email","call","principal","secretary","reach"],a:"You can reach the office on 014 717 0042, or message Front Office in this app, between 07:30 and 15:00 on weekdays. Our principal is Mrs Mokoena."},
+ {k:["address","where","located","location","directions"],a:"We are at 14 Acacia Street, Vaalwater. The office is open 07:30 to 15:00 on weekdays."}
+];
+const GREET=/\b(hi|hello|hallo|hey|good morning|good day|goeie|molo|sawubona|dumela)\b/;
+const GREETR="Hi there. I can help with school fees, term dates, sport, transport, uniforms, school hours and office contacts. What would you like to know?";
+const FALLBACK="That answer is not part of this demo yet. In your school's own app, your office can load all of this information, such as fees, dates, policies and contacts, so that I can answer it instantly for every parent.";
+function respond(text){
+  const q=text.replace(/@connie/ig,' ').trim();
+  const t=" "+q.toLowerCase().replace(/[^a-z0-9' ]/g," ")+" ";
+  for(const i of KB){ if(i.k.some(k=>t.includes(k))) return i.a; }
+  if(GREET.test(q.toLowerCase())) return GREETR;
+  return FALLBACK;
+}
+function hasMention(text){ return /@connie/i.test(text); }
+
+/* ---------- Connie's brain (live): try the real AI, fall back to offline ---------- */
+async function connieReply(text){
+  const q=text.replace(/@connie/ig,' ').trim();
+  // Keep greetings warm without a round-trip; the live brain answers everything else.
+  if(GREET.test(q.toLowerCase()) && q.split(/\s+/).filter(Boolean).length<=3) return GREETR;
+  try{
+    const r=await fetch('/api/demo-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})});
+    if(r.ok){const d=await r.json();if(d&&typeof d.reply==='string'&&d.reply.trim())return d.reply.trim();}
+  }catch(e){}
+  return respond(text); // offline brain if the endpoint is missing or errors
+}
+
+/* ---------- bubble helpers ---------- */
+function nowTime(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});}
+const blueTick='<svg class="tick" viewBox="0 0 18 12"><path d="M1 6.5L4.5 10 11 2.5" fill="none" stroke="#53bdeb" stroke-width="1.4"/><path d="M6 6.5L9.5 10 16 2.5" fill="none" stroke="#53bdeb" stroke-width="1.4"/></svg>';
+function fillText(node,text){
+  const parts=text.split(/(@[Cc]onnie)/g);
+  parts.forEach(p=>{
+    if(/^@connie$/i.test(p)){const s=document.createElement('span');s.className='mention';s.textContent='@Connie';node.appendChild(s);}
+    else{node.appendChild(document.createTextNode(p));}
+  });
+}
+function bubble(feed,text,side,sender,isBot){
+  const b=document.createElement('div');b.className='bubble '+side;
+  if(sender){
+    const s=document.createElement('div');s.className='sender'+(isBot?' botname':'');
+    s.textContent=sender;
+    if(isBot){const badge=document.createElement('span');badge.className='ai-badge';badge.textContent='AI';s.appendChild(document.createTextNode(' '));s.appendChild(badge);}
+    b.appendChild(s);
+  }
+  const m=document.createElement('div');fillText(m,text);b.appendChild(m);
+  const t=document.createElement('span');t.className='time';t.innerHTML=nowTime()+(side==='out'?blueTick:'');b.appendChild(t);
+  feed.appendChild(b);feed.scrollTop=feed.scrollHeight;
+}
+function typing(feed,statusEl){
+  if(statusEl)statusEl.textContent='typing…';
+  const t=document.createElement('div');t.className='typing';t.innerHTML='<span></span><span></span><span></span>';
+  feed.appendChild(t);feed.scrollTop=feed.scrollHeight;return t;
+}
+function connieDelay(reply){return 700+Math.min(reply.length*9,800);}
+
+/* ---------- Connie dedicated chat ---------- */
+const aFeed=document.getElementById('feed-assistant'),aInput=document.getElementById('input'),aStatus=document.getElementById('asst-status');
+const chips=["What are the school fees?","When does term end?","Is there sport on Saturday?","Bus routes?","School hours?","Contact the office"];
+const chipsEl=document.getElementById('chips');
+chips.forEach(q=>{const c=document.createElement('div');c.className='chip';c.textContent=q;c.onclick=()=>{if(!aBusy){aInput.value=q;aSend();}};chipsEl.appendChild(c);});
+let aBusy=false;
+async function aSend(){
+  const text=aInput.value.trim();if(!text||aBusy)return;aBusy=true;
+  bubble(aFeed,text,'out');aInput.value='';aInput.style.height='auto';
+  const t=typing(aFeed,aStatus);
+  const reply=await connieReply(text);
+  t.remove();aStatus.textContent='School assistant · always on';bubble(aFeed,reply,'in');aBusy=false;
+}
+document.getElementById('send').onclick=aSend;
+aInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aSend();}});
+aInput.addEventListener('input',()=>{aInput.style.height='auto';aInput.style.height=Math.min(aInput.scrollHeight,90)+'px';});
+
+/* ---------- Front Office: human reply, or @Connie answers instantly ---------- */
+const oFeed=document.getElementById('feed-office'),oInput=document.getElementById('input-office');
+let oBusy=false;
+async function oSend(){
+  const text=oInput.value.trim();if(!text||oBusy)return;oBusy=true;
+  bubble(oFeed,text,'out');oInput.value='';
+  const t=typing(oFeed,null);
+  if(hasMention(text)){
+    const reply=await connieReply(text);
+    t.remove();bubble(oFeed,reply,'in','Connie',true);oBusy=false;
+  }else{
+    setTimeout(()=>{t.remove();bubble(oFeed,"Thank you, your message has been logged. A staff member will reply during office hours, 07:30 to 15:00.",'in','Front Office');oBusy=false;},900);
+  }
+}
+document.getElementById('send-office').onclick=oSend;
+oInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();oSend();}});
+
+/* ---------- Group: post as you, @Connie answers inline ---------- */
+const gFeed=document.getElementById('feed-group'),gInput=document.getElementById('input-group');
+let gBusy=false;
+async function gSend(){
+  const text=gInput.value.trim();if(!text||gBusy)return;
+  bubble(gFeed,text,'out');gInput.value='';
+  if(hasMention(text)){
+    gBusy=true;const t=typing(gFeed,null);
+    const reply=await connieReply(text);
+    t.remove();bubble(gFeed,reply,'in','Connie',true);gBusy=false;
+  }
+}
+document.getElementById('send-group').onclick=gSend;
+gInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();gSend();}});
+</script>
+</body>
+</html>

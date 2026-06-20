@@ -30,6 +30,14 @@ export default function Hero() {
             {home.hero.subhead}
           </p>
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <a
+              href="/demo/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest"
+            >
+              See the app in action
+            </a>
             <Link
               to="/how-it-works"
               className="btn-primary px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest"
