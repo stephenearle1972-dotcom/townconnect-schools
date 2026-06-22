@@ -6,7 +6,7 @@
 <title>TownConnect Schools — Live App Demo</title>
 <style>
   :root{
-    --wa-header:#008069;--wa-bg:#efeae2;--wa-out:#d9fdd3;--wa-in:#ffffff;
+    --wa-header:#157f76;--wa-bg:#eceeed;--wa-out:#d4ece6;--wa-in:#ffffff;
     --wa-ink:#111b21;--wa-sub:#667781;--tc-teal:#2f8f8f;--tc-ink:#1f2d3a;
     --urgent:#c0392b;--bot:#1f6feb;
   }
@@ -53,7 +53,7 @@
   .row-prev{font-size:13px;color:#667781;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;display:flex;align-items:center;gap:5px;}
   .tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:5px;margin-left:6px;}
   .tag.ai{background:var(--bot);color:#fff;}.tag.official{background:#0a7d6b;color:#fff;}
-  .badge{background:#25d366;color:#fff;border-radius:12px;min-width:19px;height:19px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;flex:0 0 auto;}
+  .badge{background:var(--wa-header);color:#fff;border-radius:12px;min-width:19px;height:19px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;flex:0 0 auto;}
   .clip{width:13px;height:13px;fill:#667781;}
   .mini-mention{color:var(--bot);font-weight:600;}
   .privacy{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#f6f8f7;border-top:1px solid #ececec;color:#5a6b74;font-size:11.5px;line-height:1.35;}
@@ -106,6 +106,14 @@
   .caption{text-align:center;color:#3a4b54;font-size:13px;max-width:440px;line-height:1.5;}
   .caption b{color:var(--tc-teal);}
   .caption .pill{display:inline-block;background:#fff;border:1px solid #d6ddd9;border-radius:20px;padding:5px 13px;margin-top:7px;font-size:12px;color:#5a6b74;box-shadow:0 1px 2px rgba(0,0,0,.05);}
+
+  /* On a phone, drop the mock frame and fill the screen like a real app */
+  @media (max-width:600px){
+    body{padding:0;display:block;background:var(--wa-bg);}
+    .phone{width:100vw;height:100dvh;max-width:none;max-height:none;border-radius:0;padding:0;box-shadow:none;background:var(--wa-bg);}
+    .screen{border-radius:0;height:100dvh;}
+    .notch,.statusbar,.caption{display:none;}
+  }
 </style>
 </head>
 <body>
@@ -303,16 +311,20 @@ function respond(text){
 }
 function hasMention(text){ return /@connie/i.test(text); }
 
-/* ---------- Connie's brain (live): try the real AI, fall back to offline ---------- */
-async function connieReply(text){
-  const q=text.replace(/@connie/ig,' ').trim();
-  // Keep greetings warm without a round-trip; the live brain answers everything else.
-  if(GREET.test(q.toLowerCase()) && q.split(/\s+/).filter(Boolean).length<=3) return GREETR;
+/* ---------- live brain: call the school's AI, fall back offline ---------- */
+const DEMO_API="/api/demo-chat";
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function askBrain(text){
+  const q=text.replace(/@connie/ig,' ').replace(/\s+/g,' ').trim();
   try{
-    const r=await fetch('/api/demo-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})});
-    if(r.ok){const d=await r.json();if(d&&typeof d.reply==='string'&&d.reply.trim())return d.reply.trim();}
-  }catch(e){}
-  return respond(text); // offline brain if the endpoint is missing or errors
+    const r=await fetch(DEMO_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q})});
+    if(!r.ok) throw new Error("http "+r.status);
+    const d=await r.json();
+    if(d&&d.reply) return d.reply;
+    throw new Error("no reply");
+  }catch(e){
+    return respond(text); /* offline / local-file fallback to the built-in brain */
+  }
 }
 
 /* ---------- bubble helpers ---------- */
@@ -354,7 +366,7 @@ async function aSend(){
   const text=aInput.value.trim();if(!text||aBusy)return;aBusy=true;
   bubble(aFeed,text,'out');aInput.value='';aInput.style.height='auto';
   const t=typing(aFeed,aStatus);
-  const reply=await connieReply(text);
+  const [reply]=await Promise.all([askBrain(text),sleep(650)]);
   t.remove();aStatus.textContent='School assistant · always on';bubble(aFeed,reply,'in');aBusy=false;
 }
 document.getElementById('send').onclick=aSend;
@@ -369,10 +381,11 @@ async function oSend(){
   bubble(oFeed,text,'out');oInput.value='';
   const t=typing(oFeed,null);
   if(hasMention(text)){
-    const reply=await connieReply(text);
+    const [reply]=await Promise.all([askBrain(text),sleep(650)]);
     t.remove();bubble(oFeed,reply,'in','Connie',true);oBusy=false;
   }else{
-    setTimeout(()=>{t.remove();bubble(oFeed,"Thank you, your message has been logged. A staff member will reply during office hours, 07:30 to 15:00.",'in','Front Office');oBusy=false;},900);
+    await sleep(900);
+    t.remove();bubble(oFeed,"Thank you, your message has been logged. A staff member will reply during office hours, 07:30 to 15:00.",'in','Front Office');oBusy=false;
   }
 }
 document.getElementById('send-office').onclick=oSend;
@@ -386,7 +399,7 @@ async function gSend(){
   bubble(gFeed,text,'out');gInput.value='';
   if(hasMention(text)){
     gBusy=true;const t=typing(gFeed,null);
-    const reply=await connieReply(text);
+    const [reply]=await Promise.all([askBrain(text),sleep(650)]);
     t.remove();bubble(gFeed,reply,'in','Connie',true);gBusy=false;
   }
 }
