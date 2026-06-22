@@ -8,6 +8,7 @@ import ForSchools from './pages/ForSchools.jsx';
 import Contact from './pages/Contact.jsx';
 import AdminBroadcast from './pages/AdminBroadcast.jsx';
 import Privacy from './pages/Privacy.jsx';
+import SchoolApp from './pages/SchoolApp.jsx';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/try-demo" element={<TryDemo />} />
           <Route path="/for-schools" element={<ForSchools />} />
+          <Route path="/app" element={<SchoolApp />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin-demo" element={<AdminBroadcast />} />
           <Route path="/privacy" element={<Privacy />} />
